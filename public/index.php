@@ -22,10 +22,7 @@ $klein->respond( 'GET', '/', function () {
 $klein->respond( 'POST', '/api', function () {
     $server = new JsonRPC\Server();
     $server->getProcedureHandler()
-        ->withCallback( 'ping', function () {
-            return ['pong' => time()];
-        } )->withObject( new Api() );
-
+        ->withObject( new Api\Endpoint() );
     return $server->execute();
 } );
 

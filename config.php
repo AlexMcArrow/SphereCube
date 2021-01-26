@@ -14,7 +14,8 @@ define( 'DB_CONNECT', [
     'port' => 3306,
     'user' => 'mysql',
     'pass' => 'mysql',
-    'name' => 'spherecube'
+    'name' => 'spherecube',
+    'char' => 'utf8'
 ] );
 
 define( 'JWT_ISSUE', DOMAIN );
