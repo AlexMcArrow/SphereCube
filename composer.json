@@ -1,0 +1,15 @@
+{
+    "name": "alex.mcarrow/spherecube",
+    "description": "Nonstructured information system",
+    "type": "project",
+    "license": "MIT",
+    "authors": [{
+        "name": "AlexMcArrow",
+        "email": "alex.mcarrow@gmail.com"
+    }],
+    "require": {
+        "klein/klein": "^2.1",
+        "fguillot/json-rpc": "^1.2",
+        "rain/raintpl": "^3.1"
+    }
+}
