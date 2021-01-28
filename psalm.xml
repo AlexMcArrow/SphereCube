@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<psalm errorLevel="3" resolveFromConfigFile="true" allowStringToStandInForClass="true" autoloader="bootstrap.php"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="https://getpsalm.org/schema/config" xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd">
+    <projectFiles>
+        <directory name="libs" />
+        <directory name="public" />
+        <file name="bootstrap.php" />
+        <ignoreFiles>
+            <directory name="vendor" />
+            <file name="config.php" />
+            <file name="config.php.exam" />
+        </ignoreFiles>
+    </projectFiles>
+    <stubs>
+        <file name="vendor/jetbrains/phpstorm-stubs/mysqli/mysqli.php" />
+    </stubs>
+    <issueHandlers>
+        <UnresolvableInclude errorLevel="suppress"/>
+        <UndefinedConstant errorLevel="suppress"/>
+        <ArgumentTypeCoercion errorLevel="suppress"/>
+    </issueHandlers>
+</psalm>

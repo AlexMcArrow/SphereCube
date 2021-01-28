@@ -7,9 +7,16 @@
         "name": "AlexMcArrow",
         "email": "alex.mcarrow@gmail.com"
     }],
+    "scripts": {
+        "psalm": ".\\vendor\\bin\\psalm -m --show-info=true"
+    },
     "require": {
         "klein/klein": "^2.1",
         "fguillot/json-rpc": "^1.2",
         "rain/raintpl": "^3.1"
+    },
+    "require-dev": {
+        "vimeo/psalm": "^4.4",
+        "jetbrains/phpstorm-stubs": "^2020.2"
     }
 }
