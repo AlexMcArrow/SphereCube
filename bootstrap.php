@@ -53,3 +53,6 @@ if ( DEBUG === true ) {
 
 // DB open connection
 $DB::getInstance()->connect( DB_CONNECT['host'], DB_CONNECT['port'], DB_CONNECT['user'], DB_CONNECT['pass'], DB_CONNECT['name'], DB_CONNECT['char'] );
+
+// Initilize User
+$User = new User();
