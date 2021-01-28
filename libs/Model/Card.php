@@ -2,6 +2,9 @@
 
 namespace Model;
 
+use DB;
+use User;
+
 class Card {
     /**
      * Read card by ID
@@ -9,14 +12,15 @@ class Card {
      * @return array
      */
     public static function ReadByID( $card_id ) {
-        return \DB::getInstance()
+        return DB::getInstance()
             ->query( "SELECT
-                            `card_id` AS `c_id`,
-                            `card_name` AS `c_name`
+                            c.`card_id` AS `c_id`,
+                            c.`card_name` AS `c_name`,
+                            c.`ts` AS `c_ts`
                         FROM
-                            card
-                        WHERE `card_id` = ?;
-                        ", $card_id )
+                            card AS c
+                        WHERE c.`card_id` = ?
+                        AND c.`active` = 1;", $card_id )
             ->fetchAll( true );
     }
 
@@ -26,7 +30,7 @@ class Card {
      * @return array
      */
     public static function ReadFieldsByID( $card_id ) {
-        return \DB::getInstance()
+        return DB::getInstance()
             ->query( "SELECT
                             cfv.`card_id` AS `c_id`,
                             cf.`cardfield_id` AS `cf_id`,
@@ -34,6 +38,7 @@ class Card {
                             cf.`cardfield_type` AS `cf_type`,
                             cfv.`cardfieldvalue_id` AS `cfv_id`,
                             cfv.`value` AS `cfv_value`,
+                            cfv.`ts` AS `cfv_ts`,
                             cfv.`active` AS `cfv_active`,
                             u.`user_name` AS `u_user_name`,
                             u.`active` AS `u_active`
@@ -41,9 +46,11 @@ class Card {
                             card AS c
                             JOIN `cardfieldvalue` AS cfv USING (`card_id`)
                             JOIN `cardfield` AS cf USING (`cardfield_id`)
-                            JOIN `user` AS u USING (`user_id`)
+                            JOIN `user` AS u
+                                ON (u.`user_id` = cfv.`user_id`)
                         WHERE c.`card_id` = ?
-                            AND cfv.`active` = 1;", $card_id )
+                            AND cfv.`active` = 1
+                            AND c.`active` = 1;", $card_id )
             ->fetchAll( 'cfv_id' );
     }
 
@@ -54,7 +61,7 @@ class Card {
      */
     public static function Search( $query ) {
         $q = '(*' . implode( '* *', explode( ' ', trim( $query, '*' ) ) ) . '*)';
-        return \DB::getInstance()
+        return DB::getInstance()
             ->query( "SELECT
                             *
                         FROM
@@ -66,6 +73,7 @@ class Card {
                             FROM
                             `card` AS c
                             WHERE MATCH (c.card_name) AGAINST (? IN BOOLEAN MODE)
+                            AND c.`active` = 1
                             UNION
                             ALL
                             SELECT
@@ -77,7 +85,8 @@ class Card {
                             `cardfieldvalue` AS cfv
                             JOIN `card` AS c USING (`card_id`)
                             WHERE MATCH (cfv.`value`) AGAINST (? IN BOOLEAN MODE)
-                            AND cfv.`active` = 1) AS result
+                            AND cfv.`active` = 1
+                            AND c.`active` = 1) AS result
                         GROUP BY `c_id`
                         ORDER BY `search_score` DESC
                         LIMIT 10;", $q, $q, $q, $q )
@@ -86,25 +95,35 @@ class Card {
 
     /**
      * Update card Name
-     * @param  string  $card_id
-     * @param  string  $field_id
-     * @param  string  $type
-     * @param  string  $value
-     * @return array
+     * @param  string $card_id
+     * @param  string $name
+     * @return void
      */
-    public static function UpdateField( $card_id, $field_id, $type, $value ) {
-        // TODO: update field
-        return self::ReadByID( $card_id );
+    public static function UpdateCard( $card_id, $name ) {
+        DB::getInstance()->query( "UPDATE
+                                        `card`
+                                    SET
+                                        `card_name` = ?,
+                                        `user_id` = ?
+                                    WHERE `card_id` = ?;", $name, User::$id, $card_id );
     }
 
     /**
      * Update card Name
-     * @param  string  $card_id
-     * @param  string  $name
-     * @return array
+     * @param  string $card_id
+     * @param  string $field_id
+     * @param  string $type_id
+     * @param  string $value
+     * @return void
      */
-    public static function UpdateName( $card_id, $name ) {
-        // TODO: update name
-        return self::ReadByID( $card_id );
+    public static function UpdateField( $card_id, $field_id, $type_id, $value ) {
+        DB::getInstance()->query( "UPDATE
+                                        `cardfieldvalue`
+                                    SET
+                                        `card_id` = ?,
+                                        `cardfield_id` = ?,
+                                        `user_id` = ?,
+                                        `value` = ?
+                                    WHERE `cardfieldvalue_id` = ?;", $card_id, $type_id, User::$id, $value, $field_id );
     }
 }

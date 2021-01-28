@@ -34,11 +34,16 @@ class Link {
         // Get form storage linked cards
         $links = DB::getInstance()
             ->query( "SELECT
-                            `card_id` AS `c_id`,
-                            `card_name` AS `c_name`
+                            c.`card_id` AS `c_id`,
+                            c.`card_name` AS `c_name`,
+                            c.`ts` AS `c_ts`,
+                            u.`user_name` AS `u_user_name`,
+                            u.`active` AS `u_active`
                         FROM
-                            card
-                        WHERE `card_id` IN ('" . implode( "','", array_keys( self::$name_ids ) ) . "');" )
+                            card AS c
+                            JOIN `user` AS u USING (`user_id`)
+                        WHERE c.`card_id` IN ('" . implode( "','", array_keys( self::$name_ids ) ) . "')
+                        AND c.`active` = 1;" )
             ->fetchAll( 'c_id' );
         $c_ids = [];
         array_walk_recursive( self::$name_ids, function ( string $v, string $k ) use ( &$c_ids ): void {
@@ -49,14 +54,20 @@ class Link {
             ->query( "SELECT
                             cfv.`value` AS `child_id`,
                             c.`card_id` AS `c_id`,
-                            c.`card_name` AS `c_name`
+                            c.`card_name` AS `c_name`,
+                            c.`ts` AS `c_ts`,
+                            u.`user_name` AS `u_user_name`,
+                            u.`active` AS `u_active`
                         FROM
                             `cardfieldvalue` AS cfv
                             JOIN `cardfield` AS cf USING (`cardfield_id`)
                             JOIN `card` AS c USING (`card_id`)
+                            JOIN `user` AS u
+                                ON (u.`user_id` = c.`user_id`)
                         WHERE cfv.`value` IN ('" . implode( "','", array_keys( $c_ids ) ) . "')
                             AND cf.`cardfield_type` = 'link'
-                            AND cfv.`active` = 1" )
+                            AND cfv.`active` = 1
+                            AND c.`active` = 1" )
             ->fetchAll( 'child_id', 'c_id' );
         // Enrichment card data
         foreach ( self::$name_ids as $c_id => $ids ) {

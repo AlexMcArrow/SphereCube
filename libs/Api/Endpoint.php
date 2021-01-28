@@ -29,6 +29,30 @@ class Endpoint {
     }
 
     /**
+     * Update Card
+     * @param  string  $cid
+     * @param  string  $value
+     * @return array
+     */
+    public function CardUpdate( string $cid, string $value ) {
+        \Model\Card::UpdateCard( $cid, $value );
+        return $this->CardRead( $cid );
+    }
+
+    /**
+     * Update Card field
+     * @param  string  $cid
+     * @param  string  $cfvid
+     * @param  string  $cfid
+     * @param  string  $value
+     * @return array
+     */
+    public function CardUpdateField( string $cid, string $cfvid, string $cfid, string $value ) {
+        \Model\Card::UpdateField( $cid, $cfvid, $cfid, $value );
+        return $this->CardRead( $cid );
+    }
+
+    /**
      * Check API enabled and get server params
      * @return array
      */
@@ -42,7 +66,7 @@ class Endpoint {
     }
 
     /**
-     * Search Object by $query string
+     * Search Cards by $query string
      * @param  string  $query
      * @return array
      */
