@@ -16,14 +16,37 @@ class DB {
 
     private static $_instance = null;
 
+    /**
+     * DB class for MySQL (mysqli-driver)
+     * @return void
+     */
+    function __construct() {}
+    /**
+     * Return affected rows
+     * @return int
+     */
     public static function affectedRows() {
         return self::$query->affected_rows;
     }
 
+    /**
+     * Closing cconnection
+     * @return bool
+     */
     public static function close() {
         return self::$connection->close();
     }
 
+    /**
+     * Make connetion
+     * @param  string $dbhost
+     * @param  int    $dbport
+     * @param  string $dbuser
+     * @param  string $dbpass
+     * @param  string $dbname
+     * @param  string $charset
+     * @return void
+     */
     public static function connect( $dbhost = 'localhost', $dbport = 3306, $dbuser = 'root', $dbpass = '', $dbname = '', $charset = 'utf8' ) {
         self::$connection = new mysqli( $dbhost, $dbuser, $dbpass, $dbname, $dbport );
         if ( self::$connection->connect_error ) {
@@ -32,7 +55,13 @@ class DB {
         self::$connection->set_charset( $charset );
     }
 
-    public static function fetchAll( $callback = null ) {
+    /**
+     * Fetching and restructure result
+     * @param  string|bool    $id_field    primary field name, 'true' for return single row, 'false' for always multy-row
+     * @param  string|bool    $id_subfield secondary field name, 'true' for return single row, 'false' for always multy-row
+     * @return array|object
+     */
+    public static function fetchAll( $id_field = false, $id_subfield = false ) {
         $params = array();
         $row    = array();
         $meta   = self::$query->result_metadata();
@@ -46,13 +75,21 @@ class DB {
             foreach ( $row as $key => $val ) {
                 $r[$key] = $val;
             }
-            if ( $callback != null && is_callable( $callback ) ) {
-                $value = call_user_func( $callback, $r );
-                if ( $value == 'break' ) {
-                    break;
+            if ( $id_field && $id_field !== true ) {
+                if ( $id_subfield && $id_subfield !== true ) {
+                    if ( !isset( $result[$r[$id_field]] ) ) {
+                        $result[$r[$id_field]] = [];
+                    }
+                    $result[$r[$id_field]][$r[$id_subfield]] = $r;
+                } else {
+                    $result[$r[$id_field]] = $r;
                 }
             } else {
-                $result[] = $r;
+                if ( $id_field === false ) {
+                    $result[] = $r;
+                } else {
+                    $result = $r;
+                }
             }
         }
         self::$query->close();
@@ -60,42 +97,40 @@ class DB {
         return $result;
     }
 
-    public static function fetchArray() {
-        $params = array();
-        $row    = array();
-        $meta   = self::$query->result_metadata();
-        while ( $field = $meta->fetch_field() ) {
-            $params[] = &$row[$field->name];
-        }
-        call_user_func_array( array( self::$query, 'bind_result' ), $params );
-        $result = array();
-        while ( self::$query->fetch() ) {
-            foreach ( $row as $key => $val ) {
-                $result[$key] = $val;
-            }
-        }
-        self::$query->close();
-        self::$query_closed = TRUE;
-        return $result;
-    }
-
+    /**
+     * Return instance for chain style
+     * @return DB
+     */
     public static function getInstance() {
         if ( self::$_instance === null ) {
             self::$_instance = new self;
         }
-
         return self::$_instance;
     }
 
+    /**
+     * Return last insert ID
+     * @return string|int|bool
+     */
     public static function lastInsertID() {
         return self::$connection->insert_id;
     }
 
+    /**
+     * Return number of result rows
+     * @return int
+     */
     public static function numRows() {
         self::$query->store_result();
         return self::$query->num_rows;
     }
 
+    /**
+     * Run SQL-query
+     * @param  string $query    SQL-query with or without params-placeholder
+     * @param  mixed  $args,... many params for query or array of params
+     * @return DB
+     */
     public static function query( $query ) {
         if ( !self::$query_closed ) {
             self::$query->close();
@@ -132,10 +167,20 @@ class DB {
         return self::$_instance;
     }
 
+    /**
+     * Setting showing error flag
+     * @param  bool
+     * @return void
+     */
     public static function show_errors( $flag = true ) {
         self::$show_errors = $flag;
     }
 
+    /**
+     * Check variable type
+     * @param  mixed    $var
+     * @return string
+     */
     private static function _gettype( $var ) {
         if ( is_string( $var ) ) {
             return 's';
@@ -152,6 +197,12 @@ class DB {
         return 'b';
     }
 
+    /**
+     * Throwing error
+     * @param  string             $error
+     * @throws DBErrorException
+     * @return void
+     */
     private static function error( $error ) {
         if ( self::$show_errors ) {
             throw new DBErrorException( $error );
