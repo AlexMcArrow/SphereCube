@@ -40,10 +40,16 @@ require buildpath( COREPATH, 'vendor', 'autoload.php' );
 // Require config
 require buildpath( COREPATH, 'config.php' );
 
+// Initilize DB
 $DB = new DB();
+// DEBUG variation
 if ( DEBUG ) {
     $DB::show_errors( true );
+    define( 'STATICVERSION', time() );
 } else {
     $DB::show_errors( false );
+    define( 'STATICVERSION', '20210126' );
 }
+
+// DB open connection
 $DB::getInstance()->connect( DB_CONNECT['host'], DB_CONNECT['port'], DB_CONNECT['user'], DB_CONNECT['pass'], DB_CONNECT['name'], DB_CONNECT['char'] );

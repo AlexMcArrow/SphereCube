@@ -3,11 +3,6 @@
 define( 'DOMAIN', 'spherecube.local' );
 define( 'APP_PATH', '/' );
 define( 'DEBUG', true );
-if ( DEBUG ) {
-    define( 'STATICVERSION', time() );
-} else {
-    define( 'STATICVERSION', '20210126' );
-}
 
 define( 'DB_CONNECT', [
     'host' => 'localhost',
