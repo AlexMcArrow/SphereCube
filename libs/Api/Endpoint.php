@@ -30,9 +30,9 @@ class Endpoint {
 
     /**
      * Update Card
-     * @param  string  $cid
-     * @param  string  $value
-     * @return array
+     * @param  string        $cid
+     * @param  string        $value
+     * @return array|false
      */
     public function CardUpdate( string $cid, string $value ) {
         \Model\Card::UpdateCard( $cid, $value );
@@ -41,11 +41,11 @@ class Endpoint {
 
     /**
      * Update Card field
-     * @param  string  $cid
-     * @param  string  $cfvid
-     * @param  string  $cfid
-     * @param  string  $value
-     * @return array
+     * @param  string        $cid
+     * @param  string        $cfvid
+     * @param  string        $cfid
+     * @param  string        $value
+     * @return array|false
      */
     public function CardUpdateField( string $cid, string $cfvid, string $cfid, string $value ) {
         \Model\Card::UpdateField( $cid, $cfvid, $cfid, $value );
