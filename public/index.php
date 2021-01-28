@@ -14,7 +14,6 @@ $klein->respond( 'GET', '/', function () {
         "debug"     => DEBUG
     ] );
     $t = new Rain\Tpl;
-    $t->assign( 'title', 'Hello!' );
     return $t->draw( 'main', true );
 } );
 
