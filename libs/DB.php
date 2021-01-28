@@ -4,16 +4,34 @@ class DBErrorException extends Exception {
 }
 
 class DB {
+    /**
+     * @var int
+     */
     public static $query_count = 0;
 
+    /**
+     * @var mixed
+     */
     protected static $connection;
 
+    /**
+     * @var mixed
+     */
     protected static $query;
 
+    /**
+     * @var bool
+     */
     protected static $query_closed = TRUE;
 
+    /**
+     * @var bool
+     */
     protected static $show_errors = TRUE;
 
+    /**
+     * @var mixed
+     */
     private static $_instance = null;
 
     /**
@@ -57,16 +75,17 @@ class DB {
 
     /**
      * Fetching and restructure result
-     * @param  string|bool    $id_field    primary field name, 'true' for return single row, 'false' for always multy-row
-     * @param  string|bool    $id_subfield secondary field name, 'true' for return single row, 'false' for always multy-row
-     * @return array|object
+     * @param  string|bool $id_field    primary field name, 'true' for return single row, 'false' for always multy-row
+     * @param  string|bool $id_subfield secondary field name, 'true' for return single row, 'false' for always multy-row
+     * @return array
      */
     public static function fetchAll( $id_field = false, $id_subfield = false ) {
         $params = array();
         $row    = array();
         $meta   = self::$query->result_metadata();
         while ( $field = $meta->fetch_field() ) {
-            $params[] = &$row[$field->name];
+            $row[$field->name] = null;
+            $params[]          = &$row[$field->name];
         }
         call_user_func_array( array( self::$query, 'bind_result' ), $params );
         $result = array();
@@ -77,12 +96,12 @@ class DB {
             }
             if ( $id_field && $id_field !== true ) {
                 if ( $id_subfield && $id_subfield !== true ) {
-                    if ( !isset( $result[$r[$id_field]] ) ) {
-                        $result[$r[$id_field]] = [];
+                    if ( !key_exists( (string) $r[$id_field], $result ) ) {
+                        $result[(string) $r[$id_field]] = [];
                     }
-                    $result[$r[$id_field]][$r[$id_subfield]] = $r;
+                    $result[(string) $r[$id_field]][(string) $r[$id_subfield]] = $r;
                 } else {
-                    $result[$r[$id_field]] = $r;
+                    $result[(string) $r[$id_field]] = $r;
                 }
             } else {
                 if ( $id_field === false ) {
@@ -169,7 +188,7 @@ class DB {
 
     /**
      * Setting showing error flag
-     * @param  bool
+     * @param  bool   $flag
      * @return void
      */
     public static function show_errors( $flag = true ) {

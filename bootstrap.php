@@ -43,7 +43,7 @@ require buildpath( COREPATH, 'config.php' );
 // Initilize DB
 $DB = new DB();
 // DEBUG variation
-if ( DEBUG ) {
+if ( DEBUG === true ) {
     $DB::show_errors( true );
     define( 'STATICVERSION', time() );
 } else {

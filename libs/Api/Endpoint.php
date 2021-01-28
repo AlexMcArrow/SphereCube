@@ -8,20 +8,29 @@ namespace Api;
 class Endpoint {
     /**
      * Read card
-     * @param  string         $cid
-     * @return array|object
+     * @param  string        $cid
+     * @return array|false
      */
     public function CardRead( string $cid ) {
-        $rawdata = \Model\Card::ReadByID( $cid );
-        // Hook: Link
-        \Hook\Link::Hook_Card_After_ReadByID( $rawdata );
-        // Return
-        return $rawdata;
+        $metadata = \Model\Card::ReadByID( $cid );
+        if ( key_exists( 'c_id', $metadata ) ) {
+            $fieldsdata = \Model\Card::ReadFieldsByID( $cid );
+            // Hooks
+            // Link
+            \Hook\Link::Hook_Card_After_ReadFieldsByID( $metadata, $fieldsdata );
+
+            // Return
+            return [
+                'meta'   => $metadata,
+                'fields' => $fieldsdata
+            ];
+        }
+        return false;
     }
 
     /**
      * Check API enabled and get server params
-     * @return array|object
+     * @return array
      */
     public function Ping() {
         return [
@@ -34,8 +43,8 @@ class Endpoint {
 
     /**
      * Search Object by $query string
-     * @param  string         $query
-     * @return array|object
+     * @param  string  $query
+     * @return array
      */
     public function Search( string $query ) {
         return \Model\Card::Search( $query );

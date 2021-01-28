@@ -2,32 +2,37 @@
 
 namespace Hook;
 
+use DB;
+
 class Link {
+    /**
+     * @var array
+     */
     private static $name_ids = [];
 
     /**
      * Hook for Card After ReadByID
-     * @param  array|object $rawdata
+     * @param  array  $metadata
+     * @param  array  $fieldsdata
      * @return void
      */
-    public static function Hook_Card_After_ReadByID( &$rawdata ) {
+    public static function Hook_Card_After_ReadFieldsByID( &$metadata, &$fieldsdata ) {
         self::$name_ids = [];
-        foreach ( $rawdata['card'] as $card ) {
-            foreach ( $card as $cardfield ) {
-                self::NeedName( $cardfield['cfv_value'], $cardfield['c_id'], $cardfield['cfv_id'] );
-            }
+        foreach ( $fieldsdata as $cardfield ) {
+            self::NeedName( $cardfield['cfv_value'], $cardfield['c_id'], $cardfield['cfv_id'] );
         }
-        self::GetData( $rawdata );
+        self::GetData( $metadata, $fieldsdata );
     }
 
     /**
      * Get data from storage
-     * @param  array|object $rawdata
+     * @param  array  $metadata
+     * @param  array  $fieldsdata
      * @return void
      */
-    private static function GetData( &$rawdata ) {
+    private static function GetData( &$metadata, &$fieldsdata ) {
         // Get form storage linked cards
-        $links = \DB::getInstance()
+        $links = DB::getInstance()
             ->query( "SELECT
                             `card_id` AS `c_id`,
                             `card_name` AS `c_name`
@@ -36,11 +41,11 @@ class Link {
                         WHERE `card_id` IN ('" . implode( "','", array_keys( self::$name_ids ) ) . "');" )
             ->fetchAll( 'c_id' );
         $c_ids = [];
-        array_walk_recursive( self::$name_ids, function ( $v, $k ) use ( &$c_ids ) {
+        array_walk_recursive( self::$name_ids, function ( string $v, string $k ) use ( &$c_ids ): void {
             if ( $k == 'c_id' ) {$c_ids[$v] = $v;}
         } );
         // Get form storage parents for cards
-        $parent = \DB::getInstance()
+        $parent = DB::getInstance()
             ->query( "SELECT
                             cfv.`value` AS `child_id`,
                             c.`card_id` AS `c_id`,
@@ -56,20 +61,22 @@ class Link {
         // Enrichment card data
         foreach ( self::$name_ids as $c_id => $ids ) {
             if ( isset( $links[$c_id] ) ) {
-                $rawdata['card'][$ids['c_id']][$ids['cfv_id']]['link'] = $links[$c_id];
+                $fieldsdata[$ids['cfv_id']]['link'] = $links[$c_id];
             }
             if ( isset( $parent[$ids['c_id']] ) ) {
-                if ( !isset( $rawdata['card'][$ids['c_id']]['meta'] ) ) {
-                    $rawdata['card'][$ids['c_id']]['meta'] = [];
+                if ( !isset( $metadata['parent'] ) ) {
+                    $metadata['parent'] = [];
                 }
-                $rawdata['card'][$ids['c_id']]['meta']['parent'] = $parent[$ids['c_id']];
+                $metadata['parent'] = $parent[$ids['c_id']];
             }
         }
     }
 
     /**
      * Store card id for get card data from storage
-     * @params string $card_id
+     * @param  string $child_id
+     * @param  string $c_id
+     * @param  string $cfv_id
      * @return void
      */
     private static function NeedName( $child_id, $c_id, $cfv_id ) {

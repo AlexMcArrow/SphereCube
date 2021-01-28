@@ -7,14 +7,14 @@ require '../bootstrap.php';
 $klein = new \Klein\Klein();
 
 // Routing for index page
-$klein->respond( 'GET', '/', function () {
+$klein->respond( 'GET', '/', function (): string {
     Rain\Tpl::configure( [
         "tpl_dir"   => buildpath( COREPATH, 'static', 'tpl' ),
         "cache_dir" => buildpath( COREPATH, 'cache' ),
         "debug"     => DEBUG
     ] );
     $t = new Rain\Tpl;
-    return $t->draw( 'main', true );
+    return (string) $t->draw( 'main', true );
 } );
 
 // Routing for APi`s
