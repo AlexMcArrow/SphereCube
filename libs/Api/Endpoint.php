@@ -15,8 +15,18 @@ class Endpoint {
      * @return array|false
      */
     public function CardCreate( string $value ) {
-        $cid = (string) Card::InsertCard( $value );
+        $cid = Card::InsertCard( $value );
         return $this->CardRead( $cid );
+    }
+
+    /**
+     * Create Field type
+     * @param  string   $value
+     * @param  string   $type
+     * @return string
+     */
+    public function CardCreateField( string $value, string $type ) {
+        return Card::InsertField( $value, $type );
     }
 
     /**
@@ -26,8 +36,8 @@ class Endpoint {
      * @param  string        $value
      * @return array|false
      */
-    public function CardCreateField( string $cid, string $cfid, string $value ) {
-        Card::InsertField( $cid, $cfid, $value );
+    public function CardCreateFieldValue( string $cid, string $cfid, string $value ) {
+        Card::InsertFieldValue( $cid, $cfid, $value );
         return $this->CardRead( $cid );
     }
 
@@ -45,8 +55,8 @@ class Endpoint {
      * @param  string        $cid
      * @return array|false
      */
-    public function CardDeleteField( string $cid, string $cfvid ) {
-        Card::DeleteCardField( $cid, $cfvid );
+    public function CardDeleteFieldValue( string $cid, string $cfvid ) {
+        Card::DeleteCardFieldValue( $cid, $cfvid );
         return $this->CardRead( $cid );
     }
 
@@ -91,7 +101,7 @@ class Endpoint {
      * @param  string        $value
      * @return array|false
      */
-    public function CardUpdateField( string $cid, string $cfvid, string $cfid, string $value ) {
+    public function CardUpdateFieldValue( string $cid, string $cfvid, string $cfid, string $value ) {
         Card::UpdateField( $cid, $cfvid, $cfid, $value );
         return $this->CardRead( $cid );
     }
@@ -116,5 +126,14 @@ class Endpoint {
      */
     public function Search( string $query ) {
         return Card::Search( $query );
+    }
+
+    /**
+     * Search fields by $query string
+     * @param  string  $query
+     * @return array
+     */
+    public function SearchField( string $query ) {
+        return Card::SearchField( $query );
     }
 }

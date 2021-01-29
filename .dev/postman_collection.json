@@ -58,6 +58,32 @@
 			"response": []
 		},
 		{
+			"name": "SearchField",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": 1,\r\n    \"jsonrpc\": \"2.0\",\r\n    \"method\": \"SearchField\",\r\n    \"params\": {\r\n        \"query\": \"i\"\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{HOST}}/api",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"api"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "CardRead",
 			"event": [
 				{
@@ -149,7 +175,44 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"id\": 1,\r\n    \"jsonrpc\": \"2.0\",\r\n    \"method\": \"CardCreateField\",\r\n    \"params\": {\r\n        \"cid\": \"52839add-9293-4ec9-8dbf-7b4261626af6\",\r\n        \"cfid\": \"a10341f7-5f40-11eb-8d14-02004c4f4f50\",\r\n        \"value\": \"Info text\"\r\n    }\r\n}",
+					"raw": "{\r\n    \"id\": 1,\r\n    \"jsonrpc\": \"2.0\",\r\n    \"method\": \"CardCreateField\",\r\n    \"params\": {\r\n        \"value\": \"Info text\",\r\n        \"type\": \"text\"\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{HOST}}/api",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"api"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CardCreateFieldValue",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": 1,\r\n    \"jsonrpc\": \"2.0\",\r\n    \"method\": \"CardCreateFieldValue\",\r\n    \"params\": {\r\n        \"cid\": \"52839add-9293-4ec9-8dbf-7b4261626af6\",\r\n        \"cfid\": \"a10341f7-5f40-11eb-8d14-02004c4f4f50\",\r\n        \"value\": \"Info text\"\r\n    }\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -206,7 +269,7 @@
 			"response": []
 		},
 		{
-			"name": "CardUpdateField",
+			"name": "CardUpdateFieldValue",
 			"event": [
 				{
 					"listen": "test",
@@ -223,7 +286,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"id\": 1,\r\n    \"jsonrpc\": \"2.0\",\r\n    \"method\": \"cardupdatefield\",\r\n    \"params\": {\r\n        \"cid\": \"ac7e17c1-5f40-11eb-8d14-02004c4f4f50\",\r\n        \"cfvid\": \"da2d2dca-618f-11eb-869a-02004c4f4f50\",\r\n        \"cfid\": \"a10241f7-5f40-11eb-8d14-02004c4f4f50\",\r\n        \"value\": \"#23 - user segment\"\r\n    }\r\n}",
+					"raw": "{\r\n    \"id\": 1,\r\n    \"jsonrpc\": \"2.0\",\r\n    \"method\": \"cardupdatefieldValue\",\r\n    \"params\": {\r\n        \"cid\": \"ac7e17c1-5f40-11eb-8d14-02004c4f4f50\",\r\n        \"cfvid\": \"da2d2dca-618f-11eb-869a-02004c4f4f50\",\r\n        \"cfid\": \"a10241f7-5f40-11eb-8d14-02004c4f4f50\",\r\n        \"value\": \"#23 - user segment\"\r\n    }\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -280,7 +343,7 @@
 			"response": []
 		},
 		{
-			"name": "CardDeleteField",
+			"name": "CardDeleteFieldValue",
 			"event": [
 				{
 					"listen": "test",
@@ -297,7 +360,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"id\": 1,\r\n    \"jsonrpc\": \"2.0\",\r\n    \"method\": \"CardDeleteField\",\r\n    \"params\": {\r\n        \"cid\": \"52839add-9293-4ec9-8dbf-7b4261626af6\",\r\n        \"cfvid\": \"a10341f7-5f40-11eb-8d14-02004c4f4f50\"\r\n    }\r\n}",
+					"raw": "{\r\n    \"id\": 1,\r\n    \"jsonrpc\": \"2.0\",\r\n    \"method\": \"CardDeleteFieldValue\",\r\n    \"params\": {\r\n        \"cid\": \"52839add-9293-4ec9-8dbf-7b4261626af6\",\r\n        \"cfvid\": \"a10341f7-5f40-11eb-8d14-02004c4f4f50\"\r\n    }\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
