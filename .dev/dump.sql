@@ -42,7 +42,8 @@ CREATE TABLE `cardfield` (
   `cardfield_name` varchar(400) COLLATE utf8mb4_bin NOT NULL,
   `cardfield_type` varchar(400) COLLATE utf8mb4_bin NOT NULL DEFAULT 'text',
   PRIMARY KEY (`cardfield_id`),
-  KEY `cardfield_type` (`cardfield_type`)
+  KEY `cardfield_type` (`cardfield_type`),
+  FULLTEXT KEY `cardfield_name` (`cardfield_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 /*Table structure for table `cardfieldvalue` */
