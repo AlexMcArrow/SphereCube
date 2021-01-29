@@ -1,10 +1,11 @@
 <?php
 
-namespace Hook;
+namespace Hook\Link;
 
 use DB;
+use Hooks;
 
-class Link {
+class Hook {
     /**
      * @var array
      */
@@ -12,25 +13,31 @@ class Link {
 
     /**
      * Hook for Card After ReadByID
-     * @param  array  $metadata
-     * @param  array  $fieldsdata
+     * @param  array  $data
      * @return void
      */
-    public static function Hook_Card_After_ReadFieldsByID( &$metadata, &$fieldsdata ) {
+    public static function Hook_Card_After_ReadFieldsByID( &$data ) {
         self::$name_ids = [];
-        foreach ( $fieldsdata as $cardfield ) {
+        foreach ( $data['fields'] as $cardfield ) {
             self::NeedName( $cardfield['cfv_value'], $cardfield['c_id'], $cardfield['cfv_id'] );
         }
-        self::GetData( $metadata, $fieldsdata );
+        self::GetData( $data );
+    }
+
+    /**
+     * Register hook hooks
+     * @return void
+     */
+    public static function Register() {
+        Hooks::register( 'After', 'CardRead', '\Hook\Link\Hook::Hook_Card_After_ReadFieldsByID' );
     }
 
     /**
      * Get data from storage
-     * @param  array  $metadata
-     * @param  array  $fieldsdata
+     * @param  array  $data
      * @return void
      */
-    private static function GetData( &$metadata, &$fieldsdata ) {
+    private static function GetData( &$data ) {
         // Get form storage linked cards
         $links = DB::getInstance()
             ->query( "SELECT
@@ -72,13 +79,13 @@ class Link {
         // Enrichment card data
         foreach ( self::$name_ids as $c_id => $ids ) {
             if ( isset( $links[$c_id] ) ) {
-                $fieldsdata[$ids['cfv_id']]['link'] = $links[$c_id];
+                $data['fields'][$ids['cfv_id']]['link'] = $links[$c_id];
             }
             if ( isset( $parent[$ids['c_id']] ) ) {
-                if ( !isset( $metadata['parent'] ) ) {
-                    $metadata['parent'] = [];
+                if ( !isset( $data['meta']['parent'] ) ) {
+                    $data['meta']['parent'] = [];
                 }
-                $metadata['parent'] = $parent[$ids['c_id']];
+                $data['meta']['parent'] = $parent[$ids['c_id']];
             }
         }
     }

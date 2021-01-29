@@ -2,7 +2,7 @@
 
 namespace Api;
 
-use Hook\Link;
+use Hooks;
 use Model\Card;
 
 /**
@@ -66,18 +66,18 @@ class Endpoint {
      * @return array|false
      */
     public function CardRead( string $cid ) {
-        $metadata = Card::ReadByID( $cid );
-        if ( key_exists( 'c_id', $metadata ) ) {
-            $fieldsdata = Card::ReadFieldsByID( $cid );
-            // Hooks
-            // Link
-            Link::Hook_Card_After_ReadFieldsByID( $metadata, $fieldsdata );
-
-            // Return
-            return [
-                'meta'   => $metadata,
-                'fields' => $fieldsdata
-            ];
+        $hookdata = [
+            'meta'   => [],
+            'fields' => []
+        ];
+        Hooks::calling( 'Before', 'ReadByID', $hookdata );
+        $hookdata = array_merge( $hookdata, ['meta' => Card::ReadByID( $cid )] );
+        Hooks::calling( 'After', 'ReadByID', $hookdata );
+        if ( key_exists( 'c_id', $hookdata['meta'] ) ) {
+            Hooks::calling( 'Before', 'CardRead', $hookdata );
+            $hookdata = array_merge( $hookdata, ['fields' => Card::ReadFieldsByID( $cid )] );
+            Hooks::calling( 'After', 'CardRead', $hookdata );
+            return $hookdata;
         }
         return false;
     }
@@ -125,7 +125,11 @@ class Endpoint {
      * @return array
      */
     public function Search( string $query ) {
-        return Card::Search( $query );
+        $hookdata = [];
+        Hooks::calling( 'Before', 'Search', $hookdata );
+        $hookdata = array_merge( $hookdata, Card::Search( $query ) );
+        Hooks::calling( 'After', 'Search', $hookdata );
+        return $hookdata;
     }
 
     /**
@@ -134,6 +138,10 @@ class Endpoint {
      * @return array
      */
     public function SearchField( string $query ) {
-        return Card::SearchField( $query );
+        $hookdata = [];
+        Hooks::calling( 'Before', 'SearchField', $hookdata );
+        $hookdata = array_merge( $hookdata, Card::SearchField( $query ) );
+        Hooks::calling( 'After', 'SearchField', $hookdata );
+        return $hookdata;
     }
 }

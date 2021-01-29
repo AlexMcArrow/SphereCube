@@ -111,6 +111,22 @@ CREATE TABLE `cardhist` (
   CONSTRAINT `cardhist_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
+/*Table structure for table `hook` */
+
+DROP TABLE IF EXISTS `hook`;
+
+CREATE TABLE `hook` (
+  `hook_name` varchar(50) COLLATE utf8mb4_bin NOT NULL,
+  `hook_version` varchar(20) COLLATE utf8mb4_bin NOT NULL,
+  `hook_type` varchar(400) COLLATE utf8mb4_bin DEFAULT NULL,
+  `hook_class` varchar(400) COLLATE utf8mb4_bin DEFAULT NULL,
+  `hook_desc` varchar(4000) COLLATE utf8mb4_bin NOT NULL,
+  `active` int(1) unsigned NOT NULL,
+  PRIMARY KEY (`hook_name`,`hook_version`),
+  KEY `hook_type` (`hook_type`),
+  KEY `active` (`active`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
 /*Table structure for table `role` */
 
 DROP TABLE IF EXISTS `role`;

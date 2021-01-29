@@ -66,3 +66,6 @@ $DB::getInstance()->connect( DB_CONNECT['host'], DB_CONNECT['port'], DB_CONNECT[
 
 // Initilize User
 $User = new User();
+
+// Initilize Hooks
+$Hooks = new Hooks();
