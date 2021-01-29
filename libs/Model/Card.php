@@ -7,6 +7,67 @@ use User;
 
 class Card {
     /**
+     * Delete card
+     * @param  string $card_id
+     * @return true
+     */
+    public static function DeleteCard( $card_id ) {
+        DB::getInstance()->query( "UPDATE
+                                        `card`
+                                    SET
+                                        `user_id` = ?,
+                                        `active` = 0
+                                    WHERE `card_id` = ?;", User::$id, $card_id );
+        return true;
+    }
+
+    /**
+     * Delete card
+     * @param  string            $card_id
+     * @param  string            $field_id
+     * @return string|int|bool
+     */
+    public static function DeleteCardField( $card_id, $field_id ) {
+        DB::getInstance()->query( "UPDATE
+                                        `cardfieldvalue`
+                                    SET
+                                        `user_id` = ?,
+                                        `active` = 0
+                                    WHERE `cardfieldvalue_id` = ?;", User::$id, $field_id );
+        return $card_id;
+    }
+
+    /**
+     * Create new card
+     * @param  string            $name
+     * @return string|int|bool
+     */
+    public static function InsertCard( $name ) {
+        $uuid = gen_uuid();
+        DB::getInstance()->query( "INSERT INTO `card`
+                                    (`card_id`,`card_name`,`user_id`,`active`,`ts`)
+                                    VALUES
+                                    (?,?,?,1,UNIX_TIMESTAMP());", $uuid, $name, User::$id );
+        return $uuid;
+    }
+
+    /**
+     * Update card Name
+     * @param  string            $card_id
+     * @param  string            $type_id
+     * @param  string            $value
+     * @return string|int|bool
+     */
+    public static function InsertField( $card_id, $type_id, $value ) {
+        $uuid = gen_uuid();
+        DB::getInstance()->query( "INSERT INTO `cardfieldvalue`
+                                    (`cardfieldvalue_id`,`card_id`, `cardfield_id`,`user_id`,`value`,`active`,`ts`)
+                                    VALUES
+                                    (?,?,?,?,?,1,UNIX_TIMESTAMP());", $uuid, $card_id, $type_id, User::$id, $value );
+        return $uuid;
+    }
+
+    /**
      * Read card by ID
      * @param  string  $card_id
      * @return array

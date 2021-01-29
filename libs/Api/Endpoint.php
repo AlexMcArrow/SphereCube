@@ -2,22 +2,66 @@
 
 namespace Api;
 
+use Hook\Link;
+use Model\Card;
+
 /**
  * API proxy-class for JSONRPC-server
  */
 class Endpoint {
+    /**
+     * Create Card
+     * @param  string        $value
+     * @return array|false
+     */
+    public function CardCreate( string $value ) {
+        $cid = (string) Card::InsertCard( $value );
+        return $this->CardRead( $cid );
+    }
+
+    /**
+     * Create Card
+     * @param  string        $cid
+     * @param  string        $cfid
+     * @param  string        $value
+     * @return array|false
+     */
+    public function CardCreateField( string $cid, string $cfid, string $value ) {
+        Card::InsertField( $cid, $cfid, $value );
+        return $this->CardRead( $cid );
+    }
+
+    /**
+     * Delete Card
+     * @param  string $cid
+     * @return true
+     */
+    public function CardDelete( string $cid ) {
+        return Card::DeleteCard( $cid );
+    }
+
+    /**
+     * Delete Card
+     * @param  string        $cid
+     * @return array|false
+     */
+    public function CardDeleteField( string $cid, string $cfvid ) {
+        Card::DeleteCardField( $cid, $cfvid );
+        return $this->CardRead( $cid );
+    }
+
     /**
      * Read card
      * @param  string        $cid
      * @return array|false
      */
     public function CardRead( string $cid ) {
-        $metadata = \Model\Card::ReadByID( $cid );
+        $metadata = Card::ReadByID( $cid );
         if ( key_exists( 'c_id', $metadata ) ) {
-            $fieldsdata = \Model\Card::ReadFieldsByID( $cid );
+            $fieldsdata = Card::ReadFieldsByID( $cid );
             // Hooks
             // Link
-            \Hook\Link::Hook_Card_After_ReadFieldsByID( $metadata, $fieldsdata );
+            Link::Hook_Card_After_ReadFieldsByID( $metadata, $fieldsdata );
 
             // Return
             return [
@@ -35,7 +79,7 @@ class Endpoint {
      * @return array|false
      */
     public function CardUpdate( string $cid, string $value ) {
-        \Model\Card::UpdateCard( $cid, $value );
+        Card::UpdateCard( $cid, $value );
         return $this->CardRead( $cid );
     }
 
@@ -48,7 +92,7 @@ class Endpoint {
      * @return array|false
      */
     public function CardUpdateField( string $cid, string $cfvid, string $cfid, string $value ) {
-        \Model\Card::UpdateField( $cid, $cfvid, $cfid, $value );
+        Card::UpdateField( $cid, $cfvid, $cfid, $value );
         return $this->CardRead( $cid );
     }
 
@@ -71,6 +115,6 @@ class Endpoint {
      * @return array
      */
     public function Search( string $query ) {
-        return \Model\Card::Search( $query );
+        return Card::Search( $query );
     }
 }

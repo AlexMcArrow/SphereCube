@@ -6,24 +6,13 @@
 	},
 	"item": [
 		{
-			"name": "CardRead",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
+			"name": "Ping",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"id\": 1,\r\n    \"jsonrpc\": \"2.0\",\r\n    \"method\": \"cardread\",\r\n    \"params\": {\r\n        \"cid\": \"ac7e17c1-5f40-11eb-8d14-02004c4f4f50\"\r\n    }\r\n}",
+					"raw": "{\r\n    \"id\": 1,\r\n    \"jsonrpc\": \"2.0\",\r\n    \"method\": \"ping\",\r\n    \"params\": {}\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -69,13 +58,98 @@
 			"response": []
 		},
 		{
-			"name": "Ping",
+			"name": "CardRead",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"id\": 1,\r\n    \"jsonrpc\": \"2.0\",\r\n    \"method\": \"ping\",\r\n    \"params\": {}\r\n}",
+					"raw": "{\r\n    \"id\": 1,\r\n    \"jsonrpc\": \"2.0\",\r\n    \"method\": \"cardread\",\r\n    \"params\": {\r\n        \"cid\": \"52839add-9293-4ec9-8dbf-7b4261626af6\"\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{HOST}}/api",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"api"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CardCreate",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": 1,\r\n    \"jsonrpc\": \"2.0\",\r\n    \"method\": \"cardcreate\",\r\n    \"params\": {\r\n        \"value\": \"Test new card 2\"\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{HOST}}/api",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"api"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CardCreateField",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": 1,\r\n    \"jsonrpc\": \"2.0\",\r\n    \"method\": \"CardCreateField\",\r\n    \"params\": {\r\n        \"cid\": \"52839add-9293-4ec9-8dbf-7b4261626af6\",\r\n        \"cfid\": \"a10341f7-5f40-11eb-8d14-02004c4f4f50\",\r\n        \"value\": \"Info text\"\r\n    }\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -150,6 +224,80 @@
 				"body": {
 					"mode": "raw",
 					"raw": "{\r\n    \"id\": 1,\r\n    \"jsonrpc\": \"2.0\",\r\n    \"method\": \"cardupdatefield\",\r\n    \"params\": {\r\n        \"cid\": \"ac7e17c1-5f40-11eb-8d14-02004c4f4f50\",\r\n        \"cfvid\": \"da2d2dca-618f-11eb-869a-02004c4f4f50\",\r\n        \"cfid\": \"a10241f7-5f40-11eb-8d14-02004c4f4f50\",\r\n        \"value\": \"#23 - user segment\"\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{HOST}}/api",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"api"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CardDelete",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": 1,\r\n    \"jsonrpc\": \"2.0\",\r\n    \"method\": \"CardDelete\",\r\n    \"params\": {\r\n        \"cid\": \"52839add-9293-4ec9-8dbf-7b4261626af6\"\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{HOST}}/api",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"api"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CardDeleteField",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": 1,\r\n    \"jsonrpc\": \"2.0\",\r\n    \"method\": \"CardDeleteField\",\r\n    \"params\": {\r\n        \"cid\": \"52839add-9293-4ec9-8dbf-7b4261626af6\",\r\n        \"cfvid\": \"a10341f7-5f40-11eb-8d14-02004c4f4f50\"\r\n    }\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
