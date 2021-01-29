@@ -12,7 +12,8 @@ class Hooks {
     private static $hooks = [];
 
     public function __construct() {
-        $hooklist = DB::getInstance()->query( "SELECT
+        $hooklist = Cache::readorwrite( 'HooksConstruct', 1200, function () {
+            return DB::getInstance()->query( "SELECT
                                                     h.`hook_name` AS `h_name`,
                                                     h.`hook_type` AS `h_type`,
                                                     h.`hook_class` AS `h_class`,
@@ -20,6 +21,7 @@ class Hooks {
                                                 FROM
                                                     `hook` h
                                                 WHERE h.`active` = 1;" )->fetchAll( 'h_name' );
+        } );
         foreach ( $hooklist as $hook_data ) {
             try {
                 if ( method_exists( $hook_data['h_class'], 'Register' ) ) {

@@ -13,6 +13,12 @@ define( 'DB_CONNECT', [
     'char' => 'utf8'
 ] );
 
+define( 'MEMCACHED_PCON', 'spherecube' );
+define( 'MEMCACHED_POOL', [
+    ['localhost', 11211, 10],
+    ['localhost', 11211, 10]
+] );
+
 define( 'JWT_ISSUE', DOMAIN );
 define( 'JWT_KEY', '4396f7ed7cfebe1129b183dd7cfabca9fd47f99fe076d8397c74a0f3376402ae' );
 define( 'JWT_HEADER', 'X-JWT-Token' );
