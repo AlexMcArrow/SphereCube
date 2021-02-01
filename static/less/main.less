@@ -6,11 +6,69 @@
 @import "sizes.less";
 
 html {
+    height: 100%;
+
     body {
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
         background-color: @cl-white;
         color: @cl-black;
         font-size: @size-normal;
         line-height: @lineheight;
+        width: 100%;
+        min-height: 100%;
+
+        #workspace {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .card {
+            position: absolute;
+            left: 10em;
+            top: 10em;
+            display: block;
+            width: 25em;
+            padding: @size-half / 2;
+            border: 1px solid @cl-grey;
+            background-color: lighten(@cl-grey, 30%);
+
+            &.is-pointer-down {
+                opacity: .5;
+            }
+
+            section.meta {
+                background-color: lighten(@cl-grey, 20%);
+            }
+        }
+
+        dl {
+            display: inline-block;
+
+            dt {
+                display: inline-block;
+                width: 7em;
+                text-overflow: ellipsis;
+            }
+
+            dd {
+                display: inline-block;
+            }
+        }
+
+        .meta {
+            display: inline-block;
+            position: relative;
+        }
+
+        .link {
+            cursor: pointer;
+            text-decoration: underline;
+        }
     }
 }

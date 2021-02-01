@@ -91,11 +91,12 @@ class Card {
         return DB::getInstance()
             ->query( "SELECT
                             c.`card_id` AS `cid`,
-                            c.`card_name` AS `c_name`,
-                            c.`ts` AS `c_ts`,
-                            c.`active` AS `c_active`,
-                            u.`user_name` AS `u_user_name`,
-                            u.`active` AS `u_active`
+                            c.`card_name` AS `name`,
+                            c.`ts` AS `ts`,
+                            c.`active` AS `card_active`,
+                            u.`user_id` AS `uid`,
+                            u.`user_name` AS `user_name`,
+                            u.`active` AS `user_active`
                         FROM
                             card AS c
                         JOIN `user` AS u USING (`user_id`)
@@ -114,14 +115,15 @@ class Card {
             ->query( "SELECT
                             cfv.`card_id` AS `cid`,
                             cf.`cardfield_id` AS `cfid`,
-                            cf.`cardfield_name` AS `cf_name`,
+                            cf.`cardfield_name` AS `name`,
                             cf.`cardfield_type` AS `cf_type`,
                             cfv.`cardfieldvalue_id` AS `cfvid`,
-                            cfv.`value` AS `cfv_value`,
-                            cfv.`ts` AS `cfv_ts`,
+                            cfv.`value` AS `value`,
+                            cfv.`ts` AS `ts`,
                             cfv.`active` AS `cfv_active`,
-                            u.`user_name` AS `u_user_name`,
-                            u.`active` AS `u_active`
+                            u.`user_id` AS `uid`,
+                            u.`user_name` AS `user_name`,
+                            u.`active` AS `user_active`
                         FROM
                             card AS c
                             JOIN `cardfieldvalue` AS cfv USING (`card_id`)
@@ -148,8 +150,8 @@ class Card {
                             FROM
                                 (SELECT
                                 c.`card_id` AS `cid`,
-                                c.`card_name` AS `c_name`,
-                                c.`card_name` AS `search_value`,
+                                c.`card_name` AS `name`,
+                                c.`card_name` AS `value`,
                                 0.99 + MATCH (c.card_name) AGAINST (? IN BOOLEAN MODE) AS `search_score`
                                 FROM
                                 `card` AS c
@@ -159,8 +161,8 @@ class Card {
                                 ALL
                                 SELECT
                                 c.`card_id` AS `cid`,
-                                c.`card_name` AS `c_name`,
-                                cfv.`value` AS `search_value`,
+                                c.`card_name` AS `name`,
+                                cfv.`value` AS `value`,
                                 MATCH (cfv.`value`) AGAINST (? IN BOOLEAN MODE) AS `search_score`
                                 FROM
                                 `cardfieldvalue` AS cfv
@@ -186,7 +188,7 @@ class Card {
         if ( strlen( $q ) > 1 ) {
             return DB::getInstance()->query( "SELECT
                                                     cf.`cardfield_id` AS cfid,
-                                                    cf.`cardfield_name` AS cf_name,
+                                                    cf.`cardfield_name` AS name,
                                                     cf.`cardfield_type` AS cf_type
                                                 FROM
                                                     `cardfield` cf

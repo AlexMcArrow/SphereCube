@@ -19,9 +19,19 @@ class Hook {
     public static function Hook_Card_After_ReadFieldsByID( &$data ) {
         self::$name_ids = [];
         foreach ( $data['fields'] as $cardfield ) {
-            self::NeedName( $cardfield['cfv_value'], $cardfield['cid'], $cardfield['cfvid'] );
+            self::NeedName( $cardfield['value'], $cardfield['cid'], $cardfield['cfvid'] );
         }
         self::GetData( $data );
+    }
+
+    /**
+     * Hook for Card After ReadByID
+     * @param  array  $data
+     * @return void
+     */
+    public static function Hook_On_Config( &$data ) {
+        $data['metas']['parent'] = 'meta-parent';
+        $data['types']['link']   = 'type-card-link';
     }
 
     /**
@@ -30,6 +40,7 @@ class Hook {
      */
     public static function Register() {
         Hooks::register( 'After', 'CardRead', '\Hook\Link\Hook::Hook_Card_After_ReadFieldsByID' );
+        Hooks::register( 'On', 'Config', '\Hook\Link\Hook::Hook_On_Config' );
     }
 
     /**
@@ -42,10 +53,10 @@ class Hook {
         $links = DB::getInstance()
             ->query( "SELECT
                             c.`card_id` AS `cid`,
-                            c.`card_name` AS `c_name`,
-                            c.`ts` AS `c_ts`,
-                            u.`user_name` AS `u_user_name`,
-                            u.`active` AS `u_active`
+                            c.`card_name` AS `name`,
+                            c.`ts` AS `ts`,
+                            u.`user_name` AS `user_name`,
+                            u.`active` AS `user_active`
                         FROM
                             card AS c
                             JOIN `user` AS u USING (`user_id`)
@@ -61,10 +72,10 @@ class Hook {
             ->query( "SELECT
                             cfv.`value` AS `child_id`,
                             c.`card_id` AS `cid`,
-                            c.`card_name` AS `c_name`,
-                            c.`ts` AS `c_ts`,
-                            u.`user_name` AS `u_user_name`,
-                            u.`active` AS `u_active`
+                            c.`card_name` AS `name`,
+                            c.`ts` AS `ts`,
+                            u.`user_name` AS `user_name`,
+                            u.`active` AS `user_active`
                         FROM
                             `cardfieldvalue` AS cfv
                             JOIN `cardfield` AS cf USING (`cardfield_id`)

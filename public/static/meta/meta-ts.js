@@ -4,17 +4,17 @@ LoadedMODELS['meta-ts'] = {
         return {}
     },
     props: {
-        ts: {
-            type: Number
+        data: {
+            type: Object
         }
     },
     computed: {
         moment: function() {
-            return moment.unix(this.ts).format('llll');
+            return moment.unix(this.data.ts).format('llll');
         },
         fromnow: function() {
-            return moment.unix(this.ts).fromNow();
+            return moment.unix(this.data.ts).fromNow();
         }
     },
-    template: '<div class="ts" :title="moment">{{ fromnow }}</div>',
+    template: '<div class="metats" :title="moment">{{ fromnow }}</div>',
 };

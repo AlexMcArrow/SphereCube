@@ -12,76 +12,139 @@
 <body>
 
     <div id="workspace">
-        <card cid="1cc5e6bc-5f40-11eb-8d14-02004c4f4f50"></card>
-        <card cid="ac7e17c1-5f40-11eb-8d14-02004c4f4f50"></card>
     </div>
 
     <div id="footer">
         <address>SphereCube | on {#DOMAIN#} <small>{#STATICVERSION#}</small></address>
     </div>
 
+    <script type="text/javascript" src="//{#DOMAIN#}/static/libs/jquery.js?{#STATICVERSION#}"></script>
+    <script type="text/javascript" src="//{#DOMAIN#}/static/libs/basket.js?{#STATICVERSION#}"></script>
+    <script type="text/javascript" src="//{#DOMAIN#}/static/libs/vue.js?{#STATICVERSION#}"></script>
+    <script type="text/javascript" src="//{#DOMAIN#}/static/libs/axios.js?{#STATICVERSION#}"></script>
+    <script type="text/javascript" src="//{#DOMAIN#}/static/libs/moment.js?{#STATICVERSION#}"></script>
+    <script type="text/javascript" src="//{#DOMAIN#}/static/libs/dragmove.js?{#STATICVERSION#}"></script>
     <script type="text/javascript">
         const DOMAIN = '{#DOMAIN#}';
         const VERSION = '{#STATICVERSION#}';
-        const MODELS = {
-            'Card': 'card',
-            'MetaTS': 'meta-ts',
-            'MetaUser': 'meta-user'
-        };
-        const LoadedMODELS = {};
-        const TYPES = {
-            'text': 'type-simple-text'
-        };
-        const LoadedTYPES = {};
+        var Z = new Date().getTime();
+        var MODELS = {};
+        var LoadedMODELS = {};
+        var METAS = {};
+        var LoadedMETAS = {};
+        var TYPES = {};
+        var LoadedTYPES = {};
         var APP;
+        axios.defaults.baseURL = '//' + DOMAIN;
+        Init();
+
+        function RPCCALL(method, data, res) {
+            axios.post('/api', {
+                    id: new Date().getTime(),
+                    jsonrpc: '2.0',
+                    method: method,
+                    params: data
+                })
+                .then(function(response) {
+                    res(response.data.result);
+                })
+                .catch(function(error) {
+                    // TODO: show user-error
+                    console.log('AXIOS', error);
+                });
+
+        }
+
+        function Init() {
+            RPCCALL('ping', {}, () => {
+                RPCCALL('config', {}, (res) => {
+                    MODELS = res.models;
+                    METAS = res.metas;
+                    TYPES = res.types;
+                    InitAPP();
+                });
+            });
+        }
 
         function InitAPP() {
-            console.log('Init APP');
-            APP = Vue.createApp({});
+            // TODO: splash
+            var APPrequires = [];
+            for (const [k, v] of Object.entries(MODELS)) {
+                APPrequires.push({
+                    url: '/static/models/' + v + '.js',
+                    unique: VERSION
+                });
+            };
+            for (const [k, v] of Object.entries(METAS)) {
+                APPrequires.push({
+                    url: '/static/meta/' + v + '.js',
+                    unique: VERSION
+                });
+            };
+            for (const [k, v] of Object.entries(TYPES)) {
+                APPrequires.push({
+                    url: '/static/types/' + v + '.js',
+                    unique: VERSION
+                });
+            };
+            console.log('Loading start...');
+            basket
+                .require(...APPrequires)
+                .then(() => {
+                    // TODO: unsplash
+                    console.log('Loading complete');
+                    StartAPP();
+                }),
+                (error) => {
+                    // TODO: show user-error
+                    console.log('Basket', error);
+                };
+        }
+
+        function StartAPP() {
+            APP = Vue.createApp({
+                data: () => {
+                    return {
+                        MODELS: MODELS,
+                        METAS: METAS,
+                        TYPES: TYPES,
+                        CARDS: {
+                            'ac7e17c1-5f40-11eb-8d14-02004c4f4f50': {
+                                cid: 'ac7e17c1-5f40-11eb-8d14-02004c4f4f50'
+                            }
+                        }
+                    }
+                },
+                methods: {
+                    opencard: function(cid) {
+                        //if (!cid in this.$root.CARDS) {
+                        this.$root.CARDS[cid] = {
+                            cid: cid
+                        };
+                        //}
+                    },
+                    reopencard: function(cid) {
+                        this.$root.CARDS[cid] = {
+                            cid: cid
+                        };
+                    },
+                    closecard: function(cid) {
+                        delete this.$root.CARDS[cid];
+                    }
+                },
+                template: `<card v-for="(data, key) in CARDS" :key="key" :cid="key" />`,
+            });
             for (const [k, v] of Object.entries(LoadedMODELS)) {
+                APP.component(k, v);
+            };
+            for (const [k, v] of Object.entries(LoadedMETAS)) {
                 APP.component(k, v);
             };
             for (const [k, v] of Object.entries(LoadedTYPES)) {
                 APP.component(k, v);
             };
-            console.log('Mount APP');
             APP.mount('#workspace');
         }
-    </script>
-    <script type="text/javascript" src="//{#DOMAIN#}/static/libs/basket.js?{#STATICVERSION#}"></script>
-    <script type="text/javascript" src="//{#DOMAIN#}/static/libs/vue.js?{#STATICVERSION#}"></script>
-    <script type="text/javascript" src="//{#DOMAIN#}/static/libs/axios.js?{#STATICVERSION#}"></script>
-    <script type="text/javascript" src="//{#DOMAIN#}/static/libs/moment.js?{#STATICVERSION#}"></script>
-    <script type="text/javascript">
-        // TODO: splash
-        var APPrequires = [{
-            url: '/static/app.js',
-            unique: '{#STATICVERSION#}'
-        }];
-        for (const [k, v] of Object.entries(MODELS)) {
-            APPrequires.push({
-                url: '/static/models/' + v + '.js',
-                unique: '{#STATICVERSION#}'
-            });
-        };
-        for (const [k, v] of Object.entries(TYPES)) {
-            APPrequires.push({
-                url: '/static/types/' + v + '.js',
-                unique: '{#STATICVERSION#}'
-            });
-        };
-        console.log('Loading start...');
-        basket
-            .require(...APPrequires)
-            .then(() => {
-                // TODO: unsplash
-                console.log('Loading complete');
-                InitAPP();
-            }),
-            function(error) {
-                // TODO: show user-error
-                console.log('Basket', error);
-            };
     </script>
 </body>
 

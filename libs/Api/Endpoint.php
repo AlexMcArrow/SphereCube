@@ -107,6 +107,20 @@ class Endpoint {
     }
 
     /**
+     * Config
+     * @return array
+     */
+    public function Config() {
+        $hookdata = [
+            'models' => [],
+            'metas'  => [],
+            'types'  => []
+        ];
+        Hooks::calling( 'On', 'Config', $hookdata );
+        return $hookdata;
+    }
+
+    /**
      * Check API enabled and get server params
      * @return array
      */

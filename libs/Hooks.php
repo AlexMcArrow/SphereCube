@@ -14,13 +14,13 @@ class Hooks {
     public function __construct() {
         $hooklist = Cache::readorwrite( 'HooksConstruct', 1200, function () {
             return DB::getInstance()->query( "SELECT
-                                                    h.`hook_name` AS `h_name`,
+                                                    h.`hook_name` AS `name`,
                                                     h.`hook_type` AS `h_type`,
                                                     h.`hook_class` AS `h_class`,
                                                     h.`hook_desc` AS `h_desc`
                                                 FROM
                                                     `hook` h
-                                                WHERE h.`active` = 1;" )->fetchAll( 'h_name' );
+                                                WHERE h.`active` = 1;" )->fetchAll( 'name' );
         } );
         foreach ( $hooklist as $hook_data ) {
             try {
