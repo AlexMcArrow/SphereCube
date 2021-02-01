@@ -19,7 +19,7 @@ class Hook {
     public static function Hook_Card_After_ReadFieldsByID( &$data ) {
         self::$name_ids = [];
         foreach ( $data['fields'] as $cardfield ) {
-            self::NeedName( $cardfield['cfv_value'], $cardfield['c_id'], $cardfield['cfv_id'] );
+            self::NeedName( $cardfield['cfv_value'], $cardfield['cid'], $cardfield['cfvid'] );
         }
         self::GetData( $data );
     }
@@ -41,7 +41,7 @@ class Hook {
         // Get form storage linked cards
         $links = DB::getInstance()
             ->query( "SELECT
-                            c.`card_id` AS `c_id`,
+                            c.`card_id` AS `cid`,
                             c.`card_name` AS `c_name`,
                             c.`ts` AS `c_ts`,
                             u.`user_name` AS `u_user_name`,
@@ -51,16 +51,16 @@ class Hook {
                             JOIN `user` AS u USING (`user_id`)
                         WHERE c.`card_id` IN ('" . implode( "','", array_keys( self::$name_ids ) ) . "')
                         AND c.`active` = 1;" )
-            ->fetchAll( 'c_id' );
-        $c_ids = [];
-        array_walk_recursive( self::$name_ids, function ( string $v, string $k ) use ( &$c_ids ): void {
-            if ( $k == 'c_id' ) {$c_ids[$v] = $v;}
+            ->fetchAll( 'cid' );
+        $cids = [];
+        array_walk_recursive( self::$name_ids, function ( string $v, string $k ) use ( &$cids ): void {
+            if ( $k == 'cid' ) {$cids[$v] = $v;}
         } );
         // Get form storage parents for cards
         $parent = DB::getInstance()
             ->query( "SELECT
                             cfv.`value` AS `child_id`,
-                            c.`card_id` AS `c_id`,
+                            c.`card_id` AS `cid`,
                             c.`card_name` AS `c_name`,
                             c.`ts` AS `c_ts`,
                             u.`user_name` AS `u_user_name`,
@@ -71,21 +71,21 @@ class Hook {
                             JOIN `card` AS c USING (`card_id`)
                             JOIN `user` AS u
                                 ON (u.`user_id` = c.`user_id`)
-                        WHERE cfv.`value` IN ('" . implode( "','", array_keys( $c_ids ) ) . "')
+                        WHERE cfv.`value` IN ('" . implode( "','", array_keys( $cids ) ) . "')
                             AND cf.`cardfield_type` = 'link'
                             AND cfv.`active` = 1
                             AND c.`active` = 1" )
-            ->fetchAll( 'child_id', 'c_id' );
+            ->fetchAll( 'child_id', 'cid' );
         // Enrichment card data
-        foreach ( self::$name_ids as $c_id => $ids ) {
-            if ( isset( $links[$c_id] ) ) {
-                $data['fields'][$ids['cfv_id']]['link'] = $links[$c_id];
+        foreach ( self::$name_ids as $cid => $ids ) {
+            if ( isset( $links[$cid] ) ) {
+                $data['fields'][$ids['cfvid']]['link'] = $links[$cid];
             }
-            if ( isset( $parent[$ids['c_id']] ) ) {
+            if ( isset( $parent[$ids['cid']] ) ) {
                 if ( !isset( $data['meta']['parent'] ) ) {
                     $data['meta']['parent'] = [];
                 }
-                $data['meta']['parent'] = $parent[$ids['c_id']];
+                $data['meta']['parent'] = $parent[$ids['cid']];
             }
         }
     }
@@ -93,17 +93,17 @@ class Hook {
     /**
      * Store card id for get card data from storage
      * @param  string $child_id
-     * @param  string $c_id
-     * @param  string $cfv_id
+     * @param  string $cid
+     * @param  string $cfvid
      * @return void
      */
-    private static function NeedName( $child_id, $c_id, $cfv_id ) {
+    private static function NeedName( $child_id, $cid, $cfvid ) {
         if ( !isset( self::$name_ids[$child_id] ) ) {
             self::$name_ids[$child_id] = [];
         }
         self::$name_ids[$child_id] = [
-            'c_id'   => $c_id,
-            'cfv_id' => $cfv_id
+            'cid'   => $cid,
+            'cfvid' => $cfvid
         ];
     }
 }

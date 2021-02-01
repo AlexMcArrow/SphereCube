@@ -73,7 +73,7 @@ class Endpoint {
         Hooks::calling( 'Before', 'ReadByID', $hookdata );
         $hookdata = array_merge( $hookdata, ['meta' => Card::ReadByID( $cid )] );
         Hooks::calling( 'After', 'ReadByID', $hookdata );
-        if ( key_exists( 'c_id', $hookdata['meta'] ) ) {
+        if ( key_exists( 'cid', $hookdata['meta'] ) ) {
             Hooks::calling( 'Before', 'CardRead', $hookdata );
             $hookdata = array_merge( $hookdata, ['fields' => Card::ReadFieldsByID( $cid )] );
             Hooks::calling( 'After', 'CardRead', $hookdata );
