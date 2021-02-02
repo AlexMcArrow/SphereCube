@@ -75,7 +75,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"id\": 1,\r\n    \"jsonrpc\": \"2.0\",\r\n    \"method\": \"search\",\r\n    \"params\": {\r\n        \"query\": \"server\"\r\n    }\r\n}",
+					"raw": "{\r\n    \"id\": 1,\r\n    \"jsonrpc\": \"2.0\",\r\n    \"method\": \"search\",\r\n    \"params\": {\r\n        \"query\": \"1\"\r\n    }\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -138,7 +138,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"id\": 1,\r\n    \"jsonrpc\": \"2.0\",\r\n    \"method\": \"cardread\",\r\n    \"params\": {\r\n        \"cid\": \"52839add-9293-4ec9-8dbf-7b4261626af6\"\r\n    }\r\n}",
+					"raw": "{\r\n    \"id\": 1,\r\n    \"jsonrpc\": \"2.0\",\r\n    \"method\": \"cardread\",\r\n    \"params\": {\r\n        \"cid\": \"1cc5e6bc-5f40-11eb-8d14-02004c4f4f50\"\r\n    }\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
