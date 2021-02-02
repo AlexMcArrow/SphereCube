@@ -1,7 +1,5 @@
 <?php
 
-use phpDocumentor\Reflection\Types\Callable_;
-
 class Cache {
     /**
      * @var object
