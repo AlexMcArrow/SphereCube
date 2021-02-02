@@ -13,13 +13,13 @@ LoadedMODELS['card'] = {
     },
     template: `<div class="card" :ref="cid" :key="cid">
                     <section class="meta">
-                        <h1>{{ meta.name }}</h1>
+                        <span class="title">{{ meta.name }}</span>
+                        <span class="control">
+                            <span @click="loadcard()" class="link">[*]</span>
+                            <span @click="$root.closecard(cid)" class="link">[X]</span>
+                        </span>
                         <span class="meta">
                             <component :is="comp" v-for="(comp, ckey) in $root.METAS" :key="ckey" :data="meta" />
-                        </span>
-                        <span class="control">
-                            <div @click="loadcard()">[*]</div>
-                            <div @click="$root.closecard(cid)">[X]</div>
                         </span>
                     </section>
                     <section class="fields">
@@ -32,8 +32,8 @@ LoadedMODELS['card'] = {
     mounted: function() {
         $(this.$el).draggabilly({
             containment: '#workspace',
-            handle: 'section.meta'
-        }).on('staticClick', this.dragging).on('pointerDown', this.dragging);
+            handle: 'section.meta span.title'
+        }).on('staticClick', this.dragging).on('pointerDown', this.dragging).css('z-index', (Math.round(new Date().getTime() - Z)));
     },
     beforeUnmount: function() {
         $(this.$el).draggabilly('disable').draggabilly('destroy');
@@ -54,7 +54,6 @@ LoadedMODELS['card'] = {
         },
         dragging: function(event) {
             $(event.currentTarget).css('z-index', (Math.round(new Date().getTime() - Z)));
-            //this.$forceUpdate();
         }
     }
 };

@@ -15,7 +15,7 @@
     </div>
 
     <div id="footer">
-        <address>SphereCube | on {#DOMAIN#} <small>{#STATICVERSION#}</small></address>
+        <address>SphereCube | on {#DOMAIN#} <small>v {#STATICVERSION#}</small></address>
     </div>
 
     <script type="text/javascript" src="//{#DOMAIN#}/static/libs/jquery.js?{#STATICVERSION#}"></script>
@@ -108,11 +108,9 @@
                         MODELS: MODELS,
                         METAS: METAS,
                         TYPES: TYPES,
-                        CARDS: {
-                            'ac7e17c1-5f40-11eb-8d14-02004c4f4f50': {
-                                cid: 'ac7e17c1-5f40-11eb-8d14-02004c4f4f50'
-                            }
-                        }
+                        CARDS: {},
+                        search: '',
+                        searchres: {}
                     }
                 },
                 methods: {
@@ -130,9 +128,43 @@
                     },
                     closecard: function(cid) {
                         delete this.$root.CARDS[cid];
+                    },
+                    clearsearch: function() {
+                        this.search = '';
+                        this.searchres = {};
+                    },
+                    insearch: function(value, query) {
+                        return value.replace(query, function(str) {
+                            return '<span class="highlight">' + str + '</span>'
+                        })
                     }
                 },
-                template: `<card v-for="(data, key) in CARDS" :key="key" :cid="key" />`,
+                watch: {
+                    search(newSearch, oldSearch) {
+                        var self = this;
+                        if (newSearch != oldSearch) {
+                            RPCCALL('search', {
+                                query: newSearch
+                            }, (res) => {
+                                self.searchres = {};
+                                Object.assign(self.searchres, res);
+                            });
+                        } else {
+                            self.searchres = {};
+                        }
+                    }
+                },
+                template: `<div class="search">
+                                <input v-model.trim="search" />
+                                <button @click="clearsearch">[c]</button>
+                                <div class="searchres" v-if="Object.keys(searchres).length > 0">
+                                    <div v-for="(data, key) in searchres" :key="key" :cid="key" class="result" @click="$root.opencard(data.cid)">
+                                        <span class="title">{{ data.name }}</span>
+                                        <span class="in" v-html="$root.insearch(data.value, search)"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <card v-for="(data, key) in CARDS" :key="key" :cid="key" />`,
             });
             for (const [k, v] of Object.entries(LoadedMODELS)) {
                 APP.component(k, v);

@@ -10,11 +10,11 @@ LoadedMODELS['meta-ts'] = {
     },
     computed: {
         moment: function() {
-            return moment.unix(this.data.ts).format('llll');
+            return (this.data.ts) ? moment.unix(this.data.ts).format('llll') : '';
         },
         fromnow: function() {
-            return moment.unix(this.data.ts).fromNow();
+            return (this.data.ts) ? moment.unix(this.data.ts).fromNow() : '';
         }
     },
-    template: '<div class="metats" :title="moment">{{ fromnow }}</div>',
+    template: '<span class="metats" :title="moment">{{ fromnow }}</span>',
 };

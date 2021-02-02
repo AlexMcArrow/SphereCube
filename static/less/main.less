@@ -26,44 +26,143 @@ html {
             display: block;
             width: 100%;
             height: 100%;
+
+            div.search {
+                position: absolute;
+                top: 0;
+                right: 0;
+                padding: (@size-half / 2);
+
+                input {
+                    width: (@size-double*7);
+                    border: 1px solid @cl-grey;
+                    font-size: (@size-normal*1.05);
+                    line-height: (@size-normal*1.4);
+                    padding: (@size-half / 3);
+                    text-align: center;
+                }
+
+                .searchres {
+                    display: block;
+                    border: 1px solid @cl-grey;
+                    padding: (@size-half / 3);
+                    position: absolute;
+                    right: (@size-half / 3);
+                    white-space: nowrap;
+                    background-color: lighten(@cl-grey, 30%);
+
+                    .result {
+                        display: block;
+                        border: 1px solid @cl-grey;
+                        padding: (@size-half / 3);
+                        min-width: (@size-double*10);
+                        cursor: pointer;
+
+                        .title {
+                            display: block;
+                            font-size: (@size-normal*1.05);
+                            font-weight: bolder;
+                        }
+
+                        .in {
+                            display: block;
+                            font-size: (@size-normal*0.8);
+                        }
+
+                        .highlight {
+                            background-color: lightgoldenrodyellow;
+                        }
+
+                    }
+                }
+            }
+
+            .card {
+                position: absolute;
+                display: block;
+                width: (@size-double*10);
+                border: 1px solid @cl-grey;
+                background-color: lighten(@cl-grey, 30%);
+
+                &.is-pointer-down {
+                    opacity: .5;
+                }
+
+                section.meta {
+                    position: relative;
+                    background-color: lighten(@cl-grey, 20%);
+                    display: block;
+                    padding: (@size-half / 2);
+
+                    span.title {
+                        position: relative;
+                        display: block;
+                        font-size: (@size-normal*1.05);
+                        font-weight: bolder;
+                        padding-right: (@size-double*1.2);
+                        line-height: (@size-normal*1.4);
+                        margin-bottom: (@size-half / 3);
+                        cursor: grab;
+                    }
+
+                    span.control {
+                        position: absolute;
+                        right: (@size-half / 4);
+                        top: (@size-half / 4);
+                    }
+
+
+                }
+
+                span.meta {
+                    position: relative;
+                    display: block;
+                    border-top: 1px solid @cl-grey;
+                    font-size: (@size-normal*0.8);
+
+                    span,
+                    div {
+                        display: inline-block;
+                        position: relative;
+                        margin-right: @size-half;
+                    }
+                }
+
+                section.fields {
+                    padding: (@size-half / 2);
+
+                    div.type {
+                        border: 1px solid @cl-grey;
+                        padding: (@size-half / 2);
+                        margin-bottom: (@size-half / 3);
+
+                        dl {
+                            display: block;
+                            margin-bottom: (@size-half / 3);
+
+                            dt {
+                                display: inline-block;
+                                width: 7em;
+                            }
+
+                            dd {
+                                display: inline-block;
+                            }
+                        }
+                    }
+                }
+            }
         }
 
-        .card {
+        #footer {
             position: absolute;
-            left: 10em;
-            top: 10em;
+            bottom: 0;
+            left: 0;
+            right: 0;
             display: block;
-            width: 25em;
-            padding: @size-half / 2;
-            border: 1px solid @cl-grey;
-            background-color: lighten(@cl-grey, 30%);
-
-            &.is-pointer-down {
-                opacity: .5;
-            }
-
-            section.meta {
-                background-color: lighten(@cl-grey, 20%);
-            }
-        }
-
-        dl {
-            display: inline-block;
-
-            dt {
-                display: inline-block;
-                width: 7em;
-                text-overflow: ellipsis;
-            }
-
-            dd {
-                display: inline-block;
-            }
-        }
-
-        .meta {
-            display: inline-block;
-            position: relative;
+            font-size: (@size-normal*0.7);
+            padding: (@size-half / 3) @size-normal;
+            color: @cl-grey;
         }
 
         .link {
