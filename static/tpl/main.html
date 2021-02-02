@@ -134,7 +134,8 @@
                         this.searchres = {};
                     },
                     insearch: function(value, query) {
-                        return value.replace(query, function(str) {
+                        var reg = new RegExp(query, 'gi');
+                        return value.replace(reg, function(str) {
                             return '<span class="highlight">' + str + '</span>'
                         })
                     }
