@@ -1,6 +1,6 @@
 /*
 SQLyog Ultimate v13.1.1 (64 bit)
-MySQL - 10.4.12-MariaDB : Database - spherecube
+MySQL - 10.5.8-MariaDB : Database - spherecube
 *********************************************************************
 */
 
@@ -29,7 +29,6 @@ CREATE TABLE `card` (
   PRIMARY KEY (`card_id`),
   KEY `card_ibfk_1` (`user_id`),
   KEY `active` (`active`),
-  FULLTEXT KEY `card_name` (`card_name`),
   CONSTRAINT `card_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
@@ -42,8 +41,7 @@ CREATE TABLE `cardfield` (
   `cardfield_name` varchar(400) COLLATE utf8mb4_bin NOT NULL,
   `cardfield_type` varchar(400) COLLATE utf8mb4_bin NOT NULL DEFAULT 'text',
   PRIMARY KEY (`cardfield_id`),
-  KEY `cardfield_type` (`cardfield_type`),
-  FULLTEXT KEY `cardfield_name` (`cardfield_name`)
+  KEY `cardfield_type` (`cardfield_type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 /*Table structure for table `cardfieldvalue` */
@@ -64,7 +62,6 @@ CREATE TABLE `cardfieldvalue` (
   KEY `cardfield_id` (`cardfield_id`),
   KEY `ts` (`ts`),
   KEY `cardfieldvalue_ibfk_4` (`user_id`),
-  FULLTEXT KEY `value` (`value`),
   CONSTRAINT `cardfieldvalue_ibfk_1` FOREIGN KEY (`card_id`) REFERENCES `card` (`card_id`) ON UPDATE CASCADE,
   CONSTRAINT `cardfieldvalue_ibfk_3` FOREIGN KEY (`cardfield_id`) REFERENCES `cardfield` (`cardfield_id`) ON UPDATE CASCADE,
   CONSTRAINT `cardfieldvalue_ibfk_4` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON UPDATE CASCADE

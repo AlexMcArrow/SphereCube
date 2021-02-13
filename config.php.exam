@@ -1,16 +1,22 @@
 <?php
 
-define( 'DOMAIN', 'spherecube.local' );
+define( 'DOMAIN', 'spherecube.local.mcg' );
 define( 'APP_PATH', '/' );
 define( 'DEBUG', true );
 
 define( 'DB_CONNECT', [
     'host' => 'localhost',
     'port' => 3306,
-    'user' => 'mysql',
-    'pass' => 'mysql',
+    'user' => 'dev',
+    'pass' => 'dev',
     'name' => 'spherecube',
     'char' => 'utf8'
+] );
+
+define( 'MANTICORE_CONNECT', [
+    'host' => 'localhost',
+    'port' => 9308,
+    'name' => 'spherecube'
 ] );
 
 define( 'MEMCACHED_PCON', 'spherecube' );

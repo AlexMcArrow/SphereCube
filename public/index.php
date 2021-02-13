@@ -9,8 +9,8 @@ $klein = new \Klein\Klein();
 // Routing for index page
 $klein->respond( 'GET', '/', function (): string {
     Rain\Tpl::configure( [
-        "tpl_dir"   => buildpath( COREPATH, 'static', 'tpl' ),
-        "cache_dir" => buildpath( COREPATH, 'cache' ),
+        "tpl_dir"   => buildpath( COREPATH, 'static', 'tpl' . DIRECTORY_SEPARATOR ),
+        "cache_dir" => buildpath( COREPATH, 'cache' . DIRECTORY_SEPARATOR ),
         "debug"     => DEBUG
     ] );
     $t = new Rain\Tpl;

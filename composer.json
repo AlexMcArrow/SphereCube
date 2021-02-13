@@ -8,12 +8,15 @@
         "email": "alex.mcarrow@gmail.com"
     }],
     "scripts": {
-        "psalm": ".\\vendor\\bin\\psalm -m --show-info=true"
+        "psalm": "./vendor/bin/psalm --show-info=true",
+        "psalmcache": "./vendor/bin/psalm --show-info=true --no-cache"
     },
     "require": {
         "klein/klein": "^2.1",
         "fguillot/json-rpc": "^1.2",
-        "rain/raintpl": "^3.1"
+        "rain/raintpl": "^3.1",
+        "manticoresoftware/manticoresearch-php": "^1.6",
+        "splitbrain/php-cli": "^1.1"
     },
     "require-dev": {
         "vimeo/psalm": "^4.4",

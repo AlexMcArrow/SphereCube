@@ -6,6 +6,7 @@
         <directory name="libs" />
         <directory name="public" />
         <file name="bootstrap.php" />
+        <file name="cli.php" />
         <ignoreFiles>
             <directory name="vendor" />
             <file name="config.php" />
