@@ -25,6 +25,17 @@ class Hook {
     }
 
     /**
+     * Hook for Card After Search
+     * @param  array  $data
+     * @return void
+     */
+    public static function Hook_Card_After_Search( &$data ) {
+        $data = array_filter( $data, function ( array $item ) {
+            return ( preg_match( '/^([0-9A-Fa-f]{8}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{12})$/', $item['value'] ) == false ) ? $item : false;
+        } );
+    }
+
+    /**
      * Hook for Card After ReadByID
      * @param  array  $data
      * @return void
@@ -40,6 +51,7 @@ class Hook {
      */
     public static function Register() {
         Hooks::register( 'After', 'CardRead', '\Hook\Link\Hook::Hook_Card_After_ReadFieldsByID' );
+        Hooks::register( 'After', 'Search', '\Hook\Link\Hook::Hook_Card_After_Search' );
         Hooks::register( 'On', 'Config', '\Hook\Link\Hook::Hook_On_Config' );
     }
 
