@@ -35,7 +35,7 @@ class Manticore {
     }
 
     /**
-     * @return object
+     * @return Manticoresearch\Client
      */
     public function getConnection() {
         return self::$connection;

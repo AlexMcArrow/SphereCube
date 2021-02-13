@@ -69,6 +69,7 @@ class Minimal extends CLI {
             'value'  => ['type' => 'text'],
             'guid'   => ['type' => 'string'],
             'fguid'  => ['type' => 'string'],
+            'cguid'  => ['type' => 'string'],
             'active' => ['type' => 'integer']
         ], [
             'rt_mem_limit'  => '256M',
@@ -127,6 +128,7 @@ class Minimal extends CLI {
             ->query( "SELECT
                             cfv.`cardfieldvalue_id` AS `guid`,
                             cfv.`cardfield_id` AS `fguid`,
+                            cfv.`card_id` AS `cguid`,
                             cfv.`value` AS `value`,
                             cfv.`active` AS `active`
                         FROM

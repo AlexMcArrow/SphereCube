@@ -3,6 +3,7 @@
 namespace Model;
 
 use DB;
+use Manticore;
 use User;
 
 class Card {
@@ -144,36 +145,45 @@ class Card {
     public static function Search( $query ) {
         $q = '(*' . implode( '* *', explode( ' ', trim( $query, '*' ) ) ) . '*)';
         if ( strlen( $q ) > 4 ) {
-            return DB::getInstance()
-                ->query( "SELECT
-                                *
-                            FROM
-                                (SELECT
-                                c.`card_id` AS `cid`,
-                                c.`card_name` AS `name`,
-                                c.`card_name` AS `value`,
-                                0.99 + MATCH (c.card_name) AGAINST (? IN BOOLEAN MODE) AS `search_score`
+            $ids    = [];
+            $search = new \Manticoresearch\Search( Manticore::getInstance()->getConnection() );
+            $search->setIndex( 'spherecubecard' );
+            $search->filter( 'active', 'equals', 1 );
+            $search->match( ['query' => $q, 'operator' => 'and'] );
+            $result = $search->get();
+            if ( $result->getTotal() > 0 ) {
+                foreach ( $result as $hit ) {
+                    $item               = $hit->getData();
+                    $ids[$item['guid']] = $item['guid'];
+                }
+            }
+            $search = new \Manticoresearch\Search( Manticore::getInstance()->getConnection() );
+            $search->setIndex( 'spherecubecardfieldvalue' );
+            $search->filter( 'active', 'equals', 1 );
+            $search->match( ['query' => $q, 'operator' => 'and'] );
+            $result = $search->get();
+            if ( $result->getTotal() > 0 ) {
+                foreach ( $result as $hit ) {
+                    $item                = $hit->getData();
+                    $ids[$item['cguid']] = $item['cguid'];
+                }
+            }
+            if ( count( $ids ) > 0 ) {
+                return DB::getInstance()
+                    ->query( "SELECT
+                                    c.`card_id` AS `cid`,
+                                    c.`card_name` AS `name`,
+                                    IFNULL (cfv.`value`, c.`card_name`) AS `value`
                                 FROM
-                                `card` AS c
-                                WHERE MATCH (c.card_name) AGAINST (? IN BOOLEAN MODE)
-                                AND c.`active` = 1
-                                UNION
-                                ALL
-                                SELECT
-                                c.`card_id` AS `cid`,
-                                c.`card_name` AS `name`,
-                                cfv.`value` AS `value`,
-                                MATCH (cfv.`value`) AGAINST (? IN BOOLEAN MODE) AS `search_score`
-                                FROM
-                                `cardfieldvalue` AS cfv
-                                JOIN `card` AS c USING (`card_id`)
-                                WHERE MATCH (cfv.`value`) AGAINST (? IN BOOLEAN MODE)
-                                AND cfv.`active` = 1
-                                AND c.`active` = 1) AS result
-                            GROUP BY `cid`
-                            ORDER BY `search_score` DESC
-                            LIMIT 10;", $q, $q, $q, $q )
-                ->fetchAll( 'cid' );
+                                    `card` AS c
+                                    LEFT JOIN `cardfieldvalue` cfv
+                                    ON (
+                                        c.`card_id` = cfv.`card_id`
+                                        AND cfv.`value` LIKE ?
+                                    )
+                                WHERE c.`card_id` IN ('" . implode( "','", $ids ) . "');", '%' . $query . '%' )
+                    ->fetchAll( 'cid' );
+            }
         }
         return [];
     }
@@ -186,13 +196,26 @@ class Card {
     public static function SearchField( $query ) {
         $q = trim( $query, '*' ) . '*';
         if ( strlen( $q ) > 1 ) {
-            return DB::getInstance()->query( "SELECT
-                                                    cf.`cardfield_id` AS cfid,
-                                                    cf.`cardfield_name` AS name,
-                                                    cf.`cardfield_type` AS cf_type
-                                                FROM
-                                                    `cardfield` cf
-                                                WHERE MATCH (cf.`cardfield_name`) AGAINST (? IN BOOLEAN MODE);", $q )->fetchAll( 'cfid' );
+            $ids    = [];
+            $search = new \Manticoresearch\Search( Manticore::getInstance()->getConnection() );
+            $search->setIndex( 'spherecubecardfield' );
+            $search->match( ['query' => $q, 'operator' => 'and'] );
+            $result = $search->get();
+            if ( $result->getTotal() > 0 ) {
+                foreach ( $result as $hit ) {
+                    $item               = $hit->getData();
+                    $ids[$item['guid']] = $item['guid'];
+                }
+            }
+            if ( count( $ids ) > 0 ) {
+                return DB::getInstance()->query( "SELECT
+                                                        cf.`cardfield_id` AS cfid,
+                                                        cf.`cardfield_name` AS name,
+                                                        cf.`cardfield_type` AS cf_type
+                                                    FROM
+                                                        `cardfield` cf
+                                                    WHERE cf.`cardfield_id` IN ('" . implode( "','", $ids ) . "');" )->fetchAll( 'cfid' );
+            }
         }
         return [];
     }
