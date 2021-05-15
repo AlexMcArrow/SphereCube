@@ -31,11 +31,16 @@ class Plugins {
      * @return array
      */
     public static function SearchField( string $query ) {
-        return [];
+        $plugindata = [
+            'query'  => $query,
+            'result' => []
+        ];
+        Plugins::calling( 'On', 'SearchField', $plugindata );
+        return $plugindata['result'];
     }
 
     public function __construct() {
-        $pluginlist = Cache::readorwrite( 'PluginsList', 10, function () {
+        $pluginlist = Cache::readorwrite( 'PluginsList', 900, function () {
             return DB::getInstance()->query( "SELECT
                                                     h.`plugin_name` AS `name`,
                                                     h.`plugin_type` AS `h_type`,
@@ -46,6 +51,7 @@ class Plugins {
                                                 WHERE h.`active` = 1;" )->fetchAll( 'name' );
         } );
         foreach ( $pluginlist as $plugin_data ) {
+            $plugin_data['h_class'] = 'Plugin\\' . $plugin_data['h_class'] . '\\Plugin';
             try {
                 if ( method_exists( $plugin_data['h_class'], 'Register' ) ) {
                     call_user_func( $plugin_data['h_class'] . '::Register' );

@@ -5,9 +5,9 @@ namespace Plugin\Card;
 use DB;
 use Manticore;
 use Plugins;
-use Plugin\User\Model as User;
+use Plugin\User\Plugin as User;
 
-class Model {
+class Plugin {
     /**
      * Delete card
      * @param  string $card_id
@@ -85,7 +85,7 @@ class Model {
     }
 
     /**
-     * Model for Card After ReadByID
+     * Plugin on config call
      * @param  array  $data
      * @return void
      */
@@ -153,8 +153,9 @@ class Model {
      * @return void
      */
     public static function Register() {
-        Plugins::register( 'On', 'Config', '\Plugin\Card\Model::Plugin_On_Config' );
-        Plugins::register( 'On', 'Search', '\Plugin\Card\Model::Search' );
+        Plugins::register( 'On', 'Config', '\Plugin\Card\Plugin::Plugin_On_Config' );
+        Plugins::register( 'On', 'Search', '\Plugin\Card\Plugin::Search' );
+        Plugins::register( 'On', 'SearchField', '\Plugin\Card\Plugin::SearchField' );
     }
 
     /**
@@ -210,11 +211,12 @@ class Model {
 
     /**
      * Search field
-     * @param  string  $query
-     * @return array
+     * @param  array  $data
+     * @return void
      */
-    public static function SearchField( $query ) {
-        $q = trim( $query, '*' ) . '*';
+    public static function SearchField( &$data ) {
+        $query = $data['query'];
+        $q     = trim( $query, '*' ) . '*';
         if ( strlen( $q ) > 1 ) {
             $ids    = [];
             $search = new \Manticoresearch\Search( Manticore::getInstance()->getConnection() );
@@ -228,7 +230,7 @@ class Model {
                 }
             }
             if ( count( $ids ) > 0 ) {
-                return DB::getInstance()->query( "SELECT
+                $data['result'] = DB::getInstance()->query( "SELECT
                                                         cf.`cardfield_id` AS cfid,
                                                         cf.`cardfield_name` AS name,
                                                         cf.`cardfield_type` AS cf_type
@@ -237,7 +239,6 @@ class Model {
                                                     WHERE cf.`cardfield_id` IN ('" . implode( "','", $ids ) . "');" )->fetchAll( 'cfid' );
             }
         }
-        return [];
     }
 
     /**

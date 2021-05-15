@@ -4,7 +4,7 @@ namespace Plugin\User;
 
 use Plugins;
 
-class Model {
+class Plugin {
     /**
      * @var string|bool
      */
@@ -25,7 +25,7 @@ class Model {
      * @return void
      */
     public static function Register() {
-        Plugins::register( 'On', 'Config', '\Plugin\User\Model::Plugin_On_Config' );
+        Plugins::register( 'On', 'Config', '\Plugin\User\Plugin::Plugin_On_Config' );
     }
 
     /**

@@ -8,5 +8,5 @@ LoadedMETAS['meta-user'] = {
             type: Object
         }
     },
-    template: '<div class="metauser">{{ data.user_name }}</div>',
+    template: '<span class="metauser">by <b class="bold">{{ data.user_name }}</b></span>',
 };

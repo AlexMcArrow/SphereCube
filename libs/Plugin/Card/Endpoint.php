@@ -2,7 +2,7 @@
 
 namespace Plugin\Card;
 
-use Plugin\Card\Model as Card;
+use Plugin\Card\Plugin as Card;
 use Plugins;
 
 /**

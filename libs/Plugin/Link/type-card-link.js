@@ -10,7 +10,7 @@ LoadedTYPES['type-card-link'] = {
     },
     template: `<div class="type">
                 <dl>
-                    <dt>Link to</dt>
+                    <dt>{{ data.name }}</dt>
                     <dd @click="$root.opencard(data.link.cid)" class="link">{{ data.link.name }}</dd>
                 </dl>
                 <span class="meta">
