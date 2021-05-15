@@ -1,0 +1,7 @@
+{
+    "name": "Card",
+    "mod": "model",
+    "version": "1.0.0",
+    "type": "card",
+    "desc": "Base Card model"
+}

@@ -1,7 +1,0 @@
-{
-    "name": "Text",
-    "version": "1.0.0",
-    "type": "text",
-    "desc": "Standart text fields",
-    "class": "\\Hook\\Text\\Hook"
-}

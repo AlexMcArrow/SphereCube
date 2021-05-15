@@ -1,0 +1,8 @@
+{
+    "name": "Ts",
+    "mod": "plugin",
+    "version": "1.0.0",
+    "type": "ts",
+    "desc": "Standart timestamp",
+    "class": null
+}

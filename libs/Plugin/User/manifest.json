@@ -1,0 +1,7 @@
+{
+    "name": "User",
+    "mod": "plugin",
+    "version": "1.0.0",
+    "type": "user",
+    "desc": "Base User model"
+}

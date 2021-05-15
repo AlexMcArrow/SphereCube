@@ -11,6 +11,8 @@ html {
     body {
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
         background-color: @cl-white;
+        background-image: url('./background.png');
+        background-position: left top;
         color: @cl-black;
         font-size: @size-normal;
         line-height: @lineheight;
@@ -26,6 +28,179 @@ html {
             display: block;
             width: 100%;
             height: 100%;
+
+            .spinner-eff {
+                position: absolute;
+                width: 10em;
+                height: 10em;
+                left: calc(50% - 5em);
+                top: calc(50% - 5em);
+            }
+
+            .spinner-eff:before,
+            .spinner-eff:after {
+                content: "";
+                display: block;
+            }
+
+            .spinner-eff .spinner-bar:before,
+            .spinner-eff .spinner-bar:after {
+                content: "";
+                display: block;
+            }
+
+            .spinner-eff span {
+                position: absolute;
+                left: calc(50% - 5em);
+                top: calc(50% - 1em);
+                color: @cl-white;
+                font-size: 1.6em;
+                width: 10em;
+                line-height: 2em;
+                text-align: center;
+                vertical-align: middle;
+                font-family: monospace;
+            }
+
+            @-webkit-keyframes ellipse-animation {
+                0% {
+                    border-top-left-radius: 50%;
+                    border-top-right-radius: 50%;
+                    border-bottom-right-radius: 50%;
+                    border-bottom-left-radius: 50%;
+                }
+                12.5% {
+                    border-top-left-radius: 0;
+                    border-top-right-radius: 50%;
+                    border-bottom-right-radius: 50%;
+                    border-bottom-left-radius: 50%;
+                    transform: rotate(45deg);
+                }
+                25% {
+                    border-top-left-radius: 0;
+                    border-top-right-radius: 0;
+                    border-bottom-right-radius: 50%;
+                    border-bottom-left-radius: 50%;
+                    transform: rotate(90deg);
+                }
+                37.5% {
+                    border-top-left-radius: 0;
+                    border-top-right-radius: 0;
+                    border-bottom-right-radius: 0;
+                    border-bottom-left-radius: 50%;
+                    transform: rotate(135deg);
+                }
+                50% {
+                    border-top-left-radius: 0;
+                    border-top-right-radius: 0;
+                    border-bottom-right-radius: 0;
+                    border-bottom-left-radius: 0;
+                    transform: rotate(180deg);
+                }
+                62.5% {
+                    border-top-left-radius: 50%;
+                    border-top-right-radius: 0;
+                    border-bottom-right-radius: 0;
+                    border-bottom-left-radius: 0;
+                    transform: rotate(225deg);
+                }
+                75% {
+                    border-top-left-radius: 50%;
+                    border-top-right-radius: 50%;
+                    border-bottom-right-radius: 0;
+                    border-bottom-left-radius: 0;
+                    transform: rotate(270deg);
+                }
+                87.5% {
+                    border-top-left-radius: 50%;
+                    border-top-right-radius: 50%;
+                    border-bottom-right-radius: 50%;
+                    border-bottom-left-radius: 0;
+                    transform: rotate(315deg);
+                }
+                100% {
+                    border-top-left-radius: 50%;
+                    border-top-right-radius: 50%;
+                    border-bottom-right-radius: 50%;
+                    border-bottom-left-radius: 50%;
+                    transform: rotate(360deg);
+                }
+            }
+
+            @keyframes ellipse-animation {
+                0% {
+                    border-top-left-radius: 50%;
+                    border-top-right-radius: 50%;
+                    border-bottom-right-radius: 50%;
+                    border-bottom-left-radius: 50%;
+                }
+                12.5% {
+                    border-top-left-radius: 0;
+                    border-top-right-radius: 50%;
+                    border-bottom-right-radius: 50%;
+                    border-bottom-left-radius: 50%;
+                    transform: rotate(45deg);
+                }
+                25% {
+                    border-top-left-radius: 0;
+                    border-top-right-radius: 0;
+                    border-bottom-right-radius: 50%;
+                    border-bottom-left-radius: 50%;
+                    transform: rotate(90deg);
+                }
+                37.5% {
+                    border-top-left-radius: 0;
+                    border-top-right-radius: 0;
+                    border-bottom-right-radius: 0;
+                    border-bottom-left-radius: 50%;
+                    transform: rotate(135deg);
+                }
+                50% {
+                    border-top-left-radius: 0;
+                    border-top-right-radius: 0;
+                    border-bottom-right-radius: 0;
+                    border-bottom-left-radius: 0;
+                    transform: rotate(180deg);
+                }
+                62.5% {
+                    border-top-left-radius: 50%;
+                    border-top-right-radius: 0;
+                    border-bottom-right-radius: 0;
+                    border-bottom-left-radius: 0;
+                    transform: rotate(225deg);
+                }
+                75% {
+                    border-top-left-radius: 50%;
+                    border-top-right-radius: 50%;
+                    border-bottom-right-radius: 0;
+                    border-bottom-left-radius: 0;
+                    transform: rotate(270deg);
+                }
+                87.5% {
+                    border-top-left-radius: 50%;
+                    border-top-right-radius: 50%;
+                    border-bottom-right-radius: 50%;
+                    border-bottom-left-radius: 0;
+                    transform: rotate(315deg);
+                }
+                100% {
+                    border-top-left-radius: 50%;
+                    border-top-right-radius: 50%;
+                    border-bottom-right-radius: 50%;
+                    border-bottom-left-radius: 50%;
+                    transform: rotate(360deg);
+                }
+            }
+
+            .spinner-eff.spinner-eff-5 .ellipse {
+                width: 100%;
+                height: 100%;
+                background-color: @cl-dark-grey;
+                border-radius: 50%;
+                -webkit-animation: ellipse-animation 1.6s linear 0s infinite;
+                animation: ellipse-animation 1.6s linear 0s infinite;
+                transform: rotate(0deg);
+            }
 
             div.search {
                 position: absolute;
@@ -162,7 +337,11 @@ html {
             display: block;
             font-size: (@size-normal*0.7);
             padding: (@size-half / 3) @size-normal;
-            color: @cl-grey;
+            color: @cl-black;
+
+            address {
+                font-style: normal;
+            }
         }
 
         .link {

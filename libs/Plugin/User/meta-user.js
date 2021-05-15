@@ -1,4 +1,4 @@
-LoadedMODELS['meta-user'] = {
+LoadedMETAS['meta-user'] = {
     name: 'meta-user',
     data: function() {
         return {}

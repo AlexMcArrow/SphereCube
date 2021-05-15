@@ -1,22 +1,22 @@
 <?php
 
-namespace Hook\Link;
+namespace Plugin\Link;
 
 use DB;
-use Hooks;
+use Plugins;
 
-class Hook {
+class Plugin {
     /**
      * @var array
      */
     private static $name_ids = [];
 
     /**
-     * Hook for Card After ReadByID
+     * Plugin for Card After ReadByID
      * @param  array  $data
      * @return void
      */
-    public static function Hook_Card_After_ReadFieldsByID( &$data ) {
+    public static function Plugin_Card_After_ReadFieldsByID( &$data ) {
         self::$name_ids = [];
         foreach ( $data['fields'] as $cardfield ) {
             self::NeedName( $cardfield['value'], $cardfield['cid'], $cardfield['cfvid'] );
@@ -25,34 +25,36 @@ class Hook {
     }
 
     /**
-     * Hook for Card After Search
+     * Plugin for Card After Search
      * @param  array  $data
      * @return void
      */
-    public static function Hook_Card_After_Search( &$data ) {
+    public static function Plugin_Card_After_Search( &$data ) {
         $data = array_filter( $data, function ( array $item ) {
             return ( preg_match( '/^([0-9A-Fa-f]{8}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{12})$/', $item['value'] ) == false ) ? $item : false;
         } );
     }
 
     /**
-     * Hook for Card After ReadByID
+     * Plugin for Card After ReadByID
      * @param  array  $data
      * @return void
      */
-    public static function Hook_On_Config( &$data ) {
-        $data['metas']['parent'] = 'meta-parent';
-        $data['types']['link']   = 'type-card-link';
+    public static function Plugin_On_Config( &$data ) {
+        $data['metas']['parent']            = 'meta-parent';
+        $data['types']['link']              = 'type-card-link';
+        $data['files']['meta-parent.js']    = 'Link/meta-parent.js';
+        $data['files']['type-card-link.js'] = 'Link/type-card-link.js';
     }
 
     /**
-     * Register hook hooks
+     * Register plugin plugins
      * @return void
      */
     public static function Register() {
-        Hooks::register( 'After', 'CardRead', '\Hook\Link\Hook::Hook_Card_After_ReadFieldsByID' );
-        Hooks::register( 'After', 'Search', '\Hook\Link\Hook::Hook_Card_After_Search' );
-        Hooks::register( 'On', 'Config', '\Hook\Link\Hook::Hook_On_Config' );
+        Plugins::register( 'After', 'CardRead', '\Plugin\Link\Plugin::Plugin_Card_After_ReadFieldsByID' );
+        Plugins::register( 'After', 'CardSearch', '\Plugin\Link\Plugin::Plugin_Card_After_Search' );
+        Plugins::register( 'On', 'Config', '\Plugin\Link\Plugin::Plugin_On_Config' );
     }
 
     /**

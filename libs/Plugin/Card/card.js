@@ -41,7 +41,7 @@ LoadedMODELS['card'] = {
     methods: {
         loadcard: function() {
             const self = this;
-            RPCCALL('cardread', { cid: this.cid }, (res) => {
+            MODELCALL('card', 'cardread', { cid: this.cid }, (res) => {
                 Object.assign(self.$data, res);
             });
         },

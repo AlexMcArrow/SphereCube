@@ -44,6 +44,14 @@ function autoloadclass( string $class_name ): void {
 // Register local class autoloader
 spl_autoload_register( 'autoloadclass' );
 
+// check autoload.php and config.php
+if ( !file_exists( buildpath( COREPATH, 'vendor', 'autoload.php' ) ) ) {
+    die( 'run <code>composer install</code>' );
+}
+if ( !file_exists( buildpath( COREPATH, 'config.php' ) ) ) {
+    die( '<code>config.php</code> not exist' );
+}
+
 // Require Composer autoload
 require buildpath( COREPATH, 'vendor', 'autoload.php' );
 
@@ -71,8 +79,5 @@ $Manticore::getInstance()->connect( MANTICORE_CONNECT['host'], MANTICORE_CONNECT
 // Initilize Cache
 $Cache = new Cache();
 
-// Initilize User
-$User = new User();
-
-// Initilize Hooks
-$Hooks = new Hooks();
+// Initilize Plugins
+$Plugins = new Plugins();

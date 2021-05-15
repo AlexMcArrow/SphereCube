@@ -2,20 +2,26 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="Language" content="en">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="Language" content="en" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="//{#DOMAIN#}/static/app.css?{#STATICVERSION#}" />
+    <link rel="stylesheet" href="//{#DOMAIN#}/static/alertify.css?{#STATICVERSION#}" />
     <title>SphereCube</title>
 </head>
 
 <body>
-
     <div id="workspace">
+        <div class="spinner-eff spinner-eff-5">
+            <div class="ellipse"></div>
+            <span>SphereCube</span>
+        </div>
     </div>
 
     <div id="footer">
-        <address>SphereCube | on {#DOMAIN#} <small>v {#STATICVERSION#}</small></address>
+        <address>
+        SphereCube <small>(v{#STATICVERSION#})</small> on {#DOMAIN#}
+      </address>
     </div>
 
     <script type="text/javascript" src="//{#DOMAIN#}/static/libs/jquery.js?{#STATICVERSION#}"></script>
@@ -23,10 +29,11 @@
     <script type="text/javascript" src="//{#DOMAIN#}/static/libs/vue.js?{#STATICVERSION#}"></script>
     <script type="text/javascript" src="//{#DOMAIN#}/static/libs/axios.js?{#STATICVERSION#}"></script>
     <script type="text/javascript" src="//{#DOMAIN#}/static/libs/moment.js?{#STATICVERSION#}"></script>
+    <script type="text/javascript" src="//{#DOMAIN#}/static/libs/alertify.js?{#STATICVERSION#}"></script>
     <script type="text/javascript" src="//{#DOMAIN#}/static/libs/dragmove.js?{#STATICVERSION#}"></script>
     <script type="text/javascript">
-        const DOMAIN = '{#DOMAIN#}';
-        const VERSION = '{#STATICVERSION#}';
+        const DOMAIN = "{#DOMAIN#}";
+        const VERSION = "{#STATICVERSION#}";
         var Z = new Date().getTime();
         var MODELS = {};
         var LoadedMODELS = {};
@@ -34,70 +41,75 @@
         var LoadedMETAS = {};
         var TYPES = {};
         var LoadedTYPES = {};
+        var FILES = {};
         var APP;
-        axios.defaults.baseURL = '//' + DOMAIN;
+        axios.defaults.baseURL = "//" + DOMAIN;
         Init();
 
         function RPCCALL(method, data, res) {
-            axios.post('/api', {
+            axios
+                .post("/api", {
                     id: new Date().getTime(),
-                    jsonrpc: '2.0',
+                    jsonrpc: "2.0",
                     method: method,
-                    params: data
+                    params: data,
                 })
                 .then(function(response) {
                     res(response.data.result);
                 })
                 .catch(function(error) {
                     // TODO: show user-error
-                    console.log('AXIOS', error);
+                    console.log("AXIOS", error);
                 });
+        }
 
+        function MODELCALL(model, method, data, res) {
+            axios
+                .post("/model/api/" + model, {
+                    id: new Date().getTime(),
+                    jsonrpc: "2.0",
+                    method: method,
+                    params: data,
+                })
+                .then(function(response) {
+                    res(response.data.result);
+                })
+                .catch(function(error) {
+                    // TODO: show user-error
+                    console.log("AXIOS", error);
+                });
         }
 
         function Init() {
-            RPCCALL('ping', {}, () => {
-                RPCCALL('config', {}, (res) => {
+            RPCCALL("ping", {}, () => {
+                RPCCALL("config", {}, (res) => {
                     MODELS = res.models;
                     METAS = res.metas;
                     TYPES = res.types;
-                    InitAPP();
+                    FILES = res.files;
+                    setTimeout(() => {
+                        InitAPP();
+                    }, 500);
                 });
             });
         }
 
         function InitAPP() {
-            // TODO: splash
             var APPrequires = [];
-            for (const [k, v] of Object.entries(MODELS)) {
+            for (const [k, v] of Object.entries(FILES)) {
                 APPrequires.push({
-                    url: '/static/models/' + v + '.js',
-                    unique: VERSION
+                    url: "/plugin/" + v,
+                    unique: VERSION,
                 });
-            };
-            for (const [k, v] of Object.entries(METAS)) {
-                APPrequires.push({
-                    url: '/static/meta/' + v + '.js',
-                    unique: VERSION
-                });
-            };
-            for (const [k, v] of Object.entries(TYPES)) {
-                APPrequires.push({
-                    url: '/static/types/' + v + '.js',
-                    unique: VERSION
-                });
-            };
-            console.log('Loading start...');
-            basket
-                .require(...APPrequires)
-                .then(() => {
-                    // TODO: unsplash
-                    console.log('Loading complete');
+            }
+            console.log("Loading start...");
+            basket.require(...APPrequires).then(() => {
+                    console.log("Loading complete");
                     StartAPP();
                 }),
                 (error) => {
                     // TODO: show user-error
-                    console.log('Basket', error);
+                    console.log("Basket", error);
                 };
         }
 
@@ -109,51 +121,54 @@
                         METAS: METAS,
                         TYPES: TYPES,
                         CARDS: {},
-                        search: '',
-                        searchres: {}
-                    }
+                        search: "",
+                        searchres: {},
+                    };
                 },
                 methods: {
                     opencard: function(cid) {
                         //if (!cid in this.$root.CARDS) {
                         this.$root.CARDS[cid] = {
-                            cid: cid
+                            cid: cid,
                         };
                         //}
                     },
                     reopencard: function(cid) {
                         this.$root.CARDS[cid] = {
-                            cid: cid
+                            cid: cid,
                         };
                     },
                     closecard: function(cid) {
                         delete this.$root.CARDS[cid];
                     },
                     clearsearch: function() {
-                        this.search = '';
+                        this.search = "";
                         this.searchres = {};
                     },
                     insearch: function(value, query) {
-                        var reg = new RegExp(query, 'gi');
+                        var reg = new RegExp(query, "gi");
                         return value.replace(reg, function(str) {
-                            return '<span class="highlight">' + str + '</span>'
-                        })
-                    }
+                            return '<span class="highlight">' + str + "</span>";
+                        });
+                    },
                 },
                 watch: {
                     search(newSearch, oldSearch) {
                         var self = this;
                         if (newSearch != oldSearch) {
-                            RPCCALL('search', {
-                                query: newSearch
-                            }, (res) => {
-                                self.searchres = {};
-                                Object.assign(self.searchres, res);
-                            });
+                            RPCCALL(
+                                "search", {
+                                    query: newSearch,
+                                },
+                                (res) => {
+                                    self.searchres = {};
+                                    Object.assign(self.searchres, res);
+                                }
+                            );
                         } else {
                             self.searchres = {};
                         }
-                    }
+                    },
                 },
                 template: `<div class="search">
                                 <input v-model.trim="search" />
@@ -169,14 +184,14 @@
             });
             for (const [k, v] of Object.entries(LoadedMODELS)) {
                 APP.component(k, v);
-            };
+            }
             for (const [k, v] of Object.entries(LoadedMETAS)) {
                 APP.component(k, v);
-            };
+            }
             for (const [k, v] of Object.entries(LoadedTYPES)) {
                 APP.component(k, v);
-            };
-            APP.mount('#workspace');
+            }
+            APP.mount("#workspace");
         }
     </script>
 </body>

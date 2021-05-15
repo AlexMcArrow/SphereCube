@@ -1,6 +1,6 @@
 {
     "name": "alex.mcarrow/spherecube",
-    "description": "Nonstructured information system",
+    "description": "Nonstructured Information System",
     "type": "project",
     "license": "MIT",
     "authors": [{
@@ -8,8 +8,7 @@
         "email": "alex.mcarrow@gmail.com"
     }],
     "scripts": {
-        "psalm": "./vendor/bin/psalm --show-info=true",
-        "psalmcache": "./vendor/bin/psalm --show-info=true --no-cache"
+        "psalm": "./vendor/bin/psalm --show-info=true"
     },
     "require": {
         "klein/klein": "^2.1",

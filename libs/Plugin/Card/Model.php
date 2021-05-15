@@ -1,12 +1,13 @@
 <?php
 
-namespace Model;
+namespace Plugin\Card;
 
 use DB;
 use Manticore;
-use User;
+use Plugins;
+use Plugin\User\Model as User;
 
-class Card {
+class Model {
     /**
      * Delete card
      * @param  string $card_id
@@ -84,6 +85,16 @@ class Card {
     }
 
     /**
+     * Model for Card After ReadByID
+     * @param  array  $data
+     * @return void
+     */
+    public static function Plugin_On_Config( &$data ) {
+        $data['models']['Card']   = 'card';
+        $data['files']['card.js'] = 'Card/card.js';
+    }
+
+    /**
      * Read card by ID
      * @param  string  $card_id
      * @return array
@@ -138,12 +149,22 @@ class Card {
     }
 
     /**
-     * Search card
-     * @param  string  $query
-     * @return array
+     * Register plugin plugins
+     * @return void
      */
-    public static function Search( $query ) {
-        $q = '(*' . implode( '* *', explode( ' ', trim( $query, '*' ) ) ) . '*)';
+    public static function Register() {
+        Plugins::register( 'On', 'Config', '\Plugin\Card\Model::Plugin_On_Config' );
+        Plugins::register( 'On', 'Search', '\Plugin\Card\Model::Search' );
+    }
+
+    /**
+     * Search card
+     * @param  array  $data
+     * @return void
+     */
+    public static function Search( &$data ) {
+        $query = $data['query'];
+        $q     = '(*' . implode( '* *', explode( ' ', trim( $query, '*' ) ) ) . '*)';
         if ( strlen( $q ) > 4 ) {
             $ids    = [];
             $search = new \Manticoresearch\Search( Manticore::getInstance()->getConnection() );
@@ -169,7 +190,7 @@ class Card {
                 }
             }
             if ( count( $ids ) > 0 ) {
-                return DB::getInstance()
+                $data['result'] = DB::getInstance()
                     ->query( "SELECT
                                     c.`card_id` AS `cid`,
                                     c.`card_name` AS `name`,
@@ -185,7 +206,6 @@ class Card {
                     ->fetchAll( 'cid' );
             }
         }
-        return [];
     }
 
     /**

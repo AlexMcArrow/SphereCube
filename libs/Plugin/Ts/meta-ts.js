@@ -1,4 +1,4 @@
-LoadedMODELS['meta-ts'] = {
+LoadedMETAS['meta-ts'] = {
     name: 'meta-ts',
     data: function() {
         return {}

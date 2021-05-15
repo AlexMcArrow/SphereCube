@@ -1,7 +1,0 @@
-{
-    "name": "Link",
-    "version": "1.0.0",
-    "type": "link",
-    "desc": "Fields such as links allow you to associate a card with another.",
-    "class": "\\Hook\\Link\\Hook"
-}
