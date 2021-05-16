@@ -144,26 +144,26 @@
                         MODELS: MODELS,
                         METAS: METAS,
                         TYPES: TYPES,
-                        CARDS: {},
+                        OBJECT: {},
                         search: "",
                         searchres: {},
                     };
                 },
                 methods: {
                     opencard: function(cid) {
-                        //if (!cid in this.$root.CARDS) {
-                        this.$root.CARDS[cid] = {
+                        //if (!cid in this.$root.OBJECT) {
+                        this.$root.OBJECT[cid] = {
                             cid: cid,
                         };
                         //}
                     },
                     reopencard: function(cid) {
-                        this.$root.CARDS[cid] = {
+                        this.$root.OBJECT[cid] = {
                             cid: cid,
                         };
                     },
                     closecard: function(cid) {
-                        delete this.$root.CARDS[cid];
+                        delete this.$root.OBJECT[cid];
                     },
                     clearsearch: function() {
                         this.search = "";
@@ -198,13 +198,13 @@
                                 <input v-model.trim="search" />
                                 <button @click="clearsearch" class="pointer"><i class="fas fa-eraser"></i></button>
                                 <div class="searchres" v-if="Object.keys(searchres).length > 0">
-                                    <div v-for="(data, key) in searchres" :key="key" :cid="key" class="result" @click="$root.opencard(data.cid)">
+                                    <div v-for="(data, key) in searchres" :key="key" :cid="key" class="result" @click="$root.opencard(data.cid);clearsearch()">
                                         <span class="title">{{ data.name }}</span>
                                         <span class="in" v-html="$root.insearch(data.value, search)"></span>
                                     </div>
                                 </div>
                             </div>
-                            <card v-for="(data, key) in CARDS" :key="key" :cid="key" />`,
+                            <card v-for="(data, key) in OBJECT" :key="key" :cid="key" />`,
             });
             for (const [k, v] of Object.entries(LoadedMODELS)) {
                 APP.component(k, v);

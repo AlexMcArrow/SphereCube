@@ -13,11 +13,26 @@ LoadedMODELS['card'] = {
     },
     template: `<div class="card" :ref="cid" :key="cid">
                     <section class="meta">
-                        <span class="title">{{ meta.name }}</span>
-                        <span class="control">
-                            <span @click="loadcard()" class="pointer" title="Refresh"><i class="fas fa-dot-circle"></i></span>
-                            <span @click="$root.closecard(cid)" class="pointer" title="Close"><i class="fas fa-times-circle"></i></span>
-                        </span>
+                        <table>
+                            <tr>
+                                <td>
+                                    <span class="title">{{ meta.name }}</span>
+                                </td>
+                                <td>
+                                <span class="control">
+                                    <span @click="editcard()" title="Edit" class="pointer">
+                                        <i class="fas fa-pencil-alt"></i>
+                                    </span>
+                                    <span @click="loadcard()" title="Refresh" class="pointer">
+                                        <i class="fas fa-sync"></i>
+                                    </span>
+                                    <span @click="$root.closecard(cid)" title="Close" class="pointer">
+                                        <i class="fas fa-times-circle"></i>
+                                    </span>
+                                </span>
+                                </td>
+                            </tr>
+                        </table>
                         <span class="meta">
                             <component :is="comp" v-for="(comp, ckey) in $root.METAS" :key="ckey" :data="meta" />
                         </span>
@@ -32,7 +47,7 @@ LoadedMODELS['card'] = {
     mounted: function() {
         $(this.$el).draggabilly({
             containment: '#workspace',
-            handle: 'section.meta span.title'
+            handle: 'section.meta table'
         }).on('staticClick', this.dragging).on('pointerDown', this.dragging).css('z-index', (Math.round(new Date().getTime() - Z)));
     },
     beforeUnmount: function() {
