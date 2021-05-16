@@ -18,16 +18,16 @@ $klein->respond( 'GET', '/', function (): string {
 } );
 
 // Routing to plugins static
-$klein->respond( 'GET', '/plugin/[*:plugin]/[*:file]', function ( $req ): string {
+$klein->respond( 'GET', '/plugin/[*:plugin]/[*:file]', function ( object $req, object $res ) {
     $filepath = buildpath( COREPATH, 'Plugin', $req->plugin, $req->file );
     if ( file_exists( $filepath ) ) {
         return file_get_contents( $filepath );
     }
-    return false;
+    $res->code( 404 );
 } );
 
 // Routing for plugins APi`s
-$klein->respond( 'POST', '/model/api/[*:model]', function ( $req ) {
+$klein->respond( 'POST', '/model/api/[*:model]', function ( object $req, object $res ) {
     $filepath = buildpath( COREPATH, 'Plugin', ucwords( $req->model ), 'Endpoint.php' );
     if ( file_exists( $filepath ) ) {
         $class  = 'Plugin\\' . ucwords( $req->model ) . '\\Endpoint';
@@ -36,7 +36,7 @@ $klein->respond( 'POST', '/model/api/[*:model]', function ( $req ) {
             ->withObject( new $class() );
         return $server->execute();
     } else {
-        return false;
+        $res->code( 404 );
     }
 } );
 
