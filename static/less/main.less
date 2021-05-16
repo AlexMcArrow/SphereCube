@@ -12,7 +12,7 @@ html {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
       "Oxygen", "Ubuntu", "Fira Sans", "Droid Sans", "Helvetica Neue",
       sans-serif;
-    background-color: @cl-white;
+    background-color: @cl-light-grey;
     background-image: url("./background.png");
     background-position: left top;
     color: @cl-black;
@@ -256,8 +256,10 @@ html {
       .card {
         position: absolute;
         display: block;
-        width: (@size-double*10);
+        min-width: (@size-double*10);
+        max-width: (@size-double*20);
         border: 1px solid @cl-grey;
+        border-radius: @size-half;
         background-color: lighten(@cl-grey, 30%);
 
         &.is-pointer-down {
@@ -268,23 +270,31 @@ html {
           position: relative;
           background-color: lighten(@cl-grey, 20%);
           display: block;
-          padding: (@size-half / 2);
+          padding: 0;
+          border-radius: @size-half @size-half 0 0;
 
           span.title {
             position: relative;
             display: block;
             font-size: (@size-normal*1.05);
             font-weight: bolder;
-            padding-right: (@size-double*1.2);
+            padding: (@size-half / 2) (@size-double*2) (@size-half / 2) @size-half;
             line-height: (@size-normal*1.4);
-            margin-bottom: (@size-half / 3);
             cursor: grab;
+            border-radius: @size-half @size-half 0 0;
+            background-color: @cl-dark-grey;
+            color: @cl-white;
           }
 
           span.control {
             position: absolute;
             right: (@size-half / 4);
-            top: (@size-half / 4);
+            top: (@size-half / 2);
+            color: @cl-white !important;
+
+            span {
+              margin-right: (@size-half / 3);
+            }
           }
         }
 
@@ -308,25 +318,31 @@ html {
         }
 
         section.fields {
-          padding: (@size-half / 2);
+          padding: (@size-half / 3);
 
           div.type {
             border: 1px solid @cl-grey;
-            padding: (@size-half / 2);
+            padding: (@size-half / 3);
             margin-bottom: (@size-half / 3);
+            border-radius: (@size-half / 2);;
 
             dl {
-              display: table;
+              display: block;
               margin-bottom: (@size-half / 3);
 
               dt {
-                display: table-cell;
-                width: 7em;
+                display: block;
                 font-style: italic;
+                font-weight: bold;
+                font-size: @size-half;
+                line-height: 1.3;
               }
 
               dd {
-                display: table-cell;
+                display: block;
+                font-size: @size-normal;
+                line-height: 1.4;
+                padding-left: (@size-half/2);
               }
             }
           }
@@ -350,6 +366,11 @@ html {
     }
 
     .link {
+      cursor: pointer;
+      text-decoration: underline;
+      color: @cl-link;
+    }
+    .pointer {
       cursor: pointer;
       text-decoration: underline;
     }

@@ -15,8 +15,8 @@ LoadedMODELS['card'] = {
                     <section class="meta">
                         <span class="title">{{ meta.name }}</span>
                         <span class="control">
-                            <span @click="loadcard()" class="link">[*]</span>
-                            <span @click="$root.closecard(cid)" class="link">[X]</span>
+                            <span @click="loadcard()" class="pointer" title="Refresh"><i class="fas fa-dot-circle"></i></span>
+                            <span @click="$root.closecard(cid)" class="pointer" title="Close"><i class="fas fa-times-circle"></i></span>
                         </span>
                         <span class="meta">
                             <component :is="comp" v-for="(comp, ckey) in $root.METAS" :key="ckey" :data="meta" />
