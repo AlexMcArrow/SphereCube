@@ -14,6 +14,23 @@
     <link rel="stylesheet" href="//{#DOMAIN#}/static/fontawesome.css?{#STATICVERSION#}" />
     <link rel="stylesheet" href="//{#DOMAIN#}/static/app.css?{#STATICVERSION#}" />
     <link rel="stylesheet" href="//{#DOMAIN#}/static/alertify.css?{#STATICVERSION#}" />
+    <link rel="apple-touch-icon" sizes="57x57" href="//{#DOMAIN#}/icon/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="//{#DOMAIN#}/icon/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="//{#DOMAIN#}/icon/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="//{#DOMAIN#}/icon/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="//{#DOMAIN#}/icon/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="//{#DOMAIN#}/icon/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="//{#DOMAIN#}/icon/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="//{#DOMAIN#}/icon/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="//{#DOMAIN#}/icon/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="//{#DOMAIN#}/icon/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="//{#DOMAIN#}/icon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="//{#DOMAIN#}/icon/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="//{#DOMAIN#}/icon/favicon-16x16.png">
+    <link rel="manifest" href="//{#DOMAIN#}/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="//{#DOMAIN#}/icon/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
     <title>SphereCube</title>
 </head>
 
@@ -179,7 +196,7 @@
                 },
                 template: `<div class="search">
                                 <input v-model.trim="search" />
-                                <button @click="clearsearch">[c]</button>
+                                <button @click="clearsearch" class="pointer"><i class="fas fa-eraser"></i></button>
                                 <div class="searchres" v-if="Object.keys(searchres).length > 0">
                                     <div v-for="(data, key) in searchres" :key="key" :cid="key" class="result" @click="$root.opencard(data.cid)">
                                         <span class="title">{{ data.name }}</span>

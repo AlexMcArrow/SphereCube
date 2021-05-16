@@ -17,17 +17,18 @@ $klein->respond( 'GET', '/', function (): string {
     return (string) $t->draw( 'main', true );
 } );
 
+// Routing to plugins static
 $klein->respond( 'GET', '/plugin/[*:plugin]/[*:file]', function ( $req ): string {
-    $filepath = buildpath( COREPATH, 'libs', 'Plugin', $req->plugin, $req->file );
+    $filepath = buildpath( COREPATH, 'Plugin', $req->plugin, $req->file );
     if ( file_exists( $filepath ) ) {
         return file_get_contents( $filepath );
     }
     return false;
 } );
 
-// Routing for APi`s
+// Routing for plugins APi`s
 $klein->respond( 'POST', '/model/api/[*:model]', function ( $req ) {
-    $filepath = buildpath( COREPATH, 'libs', 'Plugin', ucwords( $req->model ), 'Endpoint.php' );
+    $filepath = buildpath( COREPATH, 'Plugin', ucwords( $req->model ), 'Endpoint.php' );
     if ( file_exists( $filepath ) ) {
         $class  = 'Plugin\\' . ucwords( $req->model ) . '\\Endpoint';
         $server = new JsonRPC\Server();
@@ -39,10 +40,11 @@ $klein->respond( 'POST', '/model/api/[*:model]', function ( $req ) {
     }
 } );
 
+// Routing for Core API
 $klein->respond( 'POST', '/api', function () {
     $server = new JsonRPC\Server();
     $server->getProcedureHandler()
-        ->withObject( new Api\Endpoint() );
+        ->withObject( new Endpoint() );
     return $server->execute();
 } );
 

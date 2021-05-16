@@ -84,16 +84,6 @@ class Plugins {
     }
 
     /**
-     * EndPoint for plugin
-     * @param  string                    $params
-     * @return true|false|array|string
-     */
-    public static function endpoint( $params ) {
-        //TODO: return static
-        return $params;
-    }
-
-    /**
      * Register plugins
      * @param  string $when
      * @param  string $about
@@ -106,17 +96,6 @@ class Plugins {
             self::$plugins[$calling] = [];
         }
         self::$plugins[$calling][] = $call;
-    }
-
-    /**
-     * Route plugin static
-     * @param  string   $type
-     * @param  string   $name
-     * @return string
-     */
-    public static function route( $type, $name ) {
-        //TODO: return static
-        return $type . '_' . $name;
     }
 
     /**

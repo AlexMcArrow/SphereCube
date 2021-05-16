@@ -36,6 +36,8 @@ function gen_uuid() {
 function autoloadclass( string $class_name ): void {
     if ( file_exists( buildpath( COREPATH, 'libs', str_ireplace( '\\', DIRECTORY_SEPARATOR, $class_name ) ) . '.php' ) ) {
         require_once buildpath( COREPATH, 'libs', str_ireplace( '\\', DIRECTORY_SEPARATOR, $class_name ) ) . '.php';
+    } elseif ( file_exists( buildpath( COREPATH, 'Plugin', str_ireplace( '\\', DIRECTORY_SEPARATOR, str_ireplace( 'Plugin\\', '', $class_name ) ) ) . '.php' ) ) {
+        require_once buildpath( COREPATH, 'Plugin', str_ireplace( '\\', DIRECTORY_SEPARATOR, str_ireplace( 'Plugin\\', '', $class_name ) ) ) . '.php';
     } else {
         throw new AutoloadClassNotFound( "Class $class_name not found" );
     }
