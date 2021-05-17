@@ -50,7 +50,7 @@ class Plugins {
     }
 
     public function __construct() {
-        $pluginlist = Cache::readorwrite( self::$cache_key, self::$cache_ttl, function () {
+        $pluginlist = Cache::readorwrite( self::$cache_key, self::$cache_ttl, function (): array{
             return self::_read_plugin_list();
         } );
         foreach ( $pluginlist as $plugin_data ) {
@@ -86,6 +86,10 @@ class Plugins {
         }
     }
 
+    /**
+     * Recache plugin list
+     * @return void
+     */
     public static function plugin_list_recache() {
         $pluginlist = self::_read_plugin_list();
         Cache::write( self::$cache_key, $pluginlist, self::$cache_ttl );
@@ -116,6 +120,10 @@ class Plugins {
         return hash( 'sha256', strtolower( trim( $when ) ) . '.' . strtolower( trim( $about ) ) );
     }
 
+    /**
+     * Read plugin list
+     * @return array
+     */
     private static function _read_plugin_list() {
         return DB::getInstance()->query( "SELECT
                                                 p.`plugin_name` AS `name`,
