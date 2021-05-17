@@ -20,10 +20,11 @@ class Minimal extends CLI {
      */
     protected function main( Options $options ) {
         switch ( $options->getCmd() ) {
-            case 'cacheclear':
+            case 'cache:clear':
                 array_map( function ( string $cache ) {
                     unlink( $cache );
                 }, glob( buildpath( COREPATH, 'cache' . DIRECTORY_SEPARATOR . '*.php' ) ) );
+                Plugins::plugin_list_recache();
                 $this->success( 'Cache cleared' );
                 break;
             case 'index:drop':
@@ -157,7 +158,7 @@ class Minimal extends CLI {
      */
     protected function setup( Options $options ) {
         $options->setHelp( 'SphereCube CLI' );
-        $options->registerCommand( 'cacheclear', 'Clear cache' );
+        $options->registerCommand( 'cache:clear', 'Clear cache' );
         $options->registerCommand( 'index:drop', 'index drop structure' );
         $options->registerCommand( 'index:create', 'index create structure' );
         $options->registerCommand( 'index:rebuild', 'index rebuild data' );

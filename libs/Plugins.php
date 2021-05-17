@@ -7,6 +7,16 @@ class Plugins {
     public static $types = [];
 
     /**
+     * @var string
+     */
+    private static $cache_key = 'PluginsList';
+
+    /**
+     * @var int
+     */
+    private static $cache_ttl = 900;
+
+    /**
      * @var array
      */
     private static $plugins = [];
@@ -40,15 +50,8 @@ class Plugins {
     }
 
     public function __construct() {
-        $pluginlist = Cache::readorwrite( 'PluginsList', 900, function () {
-            return DB::getInstance()->query( "SELECT
-                                                    p.`plugin_name` AS `name`,
-                                                    p.`plugin_code` AS `code`,
-                                                    p.`plugin_class` AS `class`,
-                                                    p.`plugin_desc` AS `desc`
-                                                FROM
-                                                    `plugin` p
-                                                WHERE  p.`active` = 1;" )->fetchAll( 'name' );
+        $pluginlist = Cache::readorwrite( self::$cache_key, self::$cache_ttl, function () {
+            return self::_read_plugin_list();
         } );
         foreach ( $pluginlist as $plugin_data ) {
             $plugin_data['class'] = 'Plugin\\' . $plugin_data['class'] . '\\Plugin';
@@ -83,6 +86,11 @@ class Plugins {
         }
     }
 
+    public static function plugin_list_recache() {
+        $pluginlist = self::_read_plugin_list();
+        Cache::write( self::$cache_key, $pluginlist, self::$cache_ttl );
+    }
+
     /**
      * Register plugins
      * @param  string $when
@@ -106,5 +114,16 @@ class Plugins {
      */
     private static function _get_calling_name( $when, $about ) {
         return hash( 'sha256', strtolower( trim( $when ) ) . '.' . strtolower( trim( $about ) ) );
+    }
+
+    private static function _read_plugin_list() {
+        return DB::getInstance()->query( "SELECT
+                                                p.`plugin_name` AS `name`,
+                                                p.`plugin_code` AS `code`,
+                                                p.`plugin_class` AS `class`,
+                                                p.`plugin_desc` AS `desc`
+                                            FROM
+                                                `plugin` p
+                                            WHERE  p.`active` = 1;" )->fetchAll( 'name' );
     }
 }
