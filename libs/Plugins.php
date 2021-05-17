@@ -42,20 +42,20 @@ class Plugins {
     public function __construct() {
         $pluginlist = Cache::readorwrite( 'PluginsList', 900, function () {
             return DB::getInstance()->query( "SELECT
-                                                    h.`plugin_name` AS `name`,
-                                                    h.`plugin_type` AS `h_type`,
-                                                    h.`plugin_class` AS `h_class`,
-                                                    h.`plugin_desc` AS `h_desc`
+                                                    p.`plugin_name` AS `name`,
+                                                    p.`plugin_code` AS `code`,
+                                                    p.`plugin_class` AS `class`,
+                                                    p.`plugin_desc` AS `desc`
                                                 FROM
-                                                    `plugin` h
-                                                WHERE h.`active` = 1;" )->fetchAll( 'name' );
+                                                    `plugin` p
+                                                WHERE  p.`active` = 1;" )->fetchAll( 'name' );
         } );
         foreach ( $pluginlist as $plugin_data ) {
-            $plugin_data['h_class'] = 'Plugin\\' . $plugin_data['h_class'] . '\\Plugin';
+            $plugin_data['class'] = 'Plugin\\' . $plugin_data['class'] . '\\Plugin';
             try {
-                if ( method_exists( $plugin_data['h_class'], 'Register' ) ) {
-                    call_user_func( $plugin_data['h_class'] . '::Register' );
-                    self::$types[$plugin_data['h_type']] = $plugin_data;
+                if ( method_exists( $plugin_data['class'], 'Register' ) ) {
+                    call_user_func( $plugin_data['class'] . '::Register' );
+                    self::$types[$plugin_data['code']] = $plugin_data;
                 }
             } catch ( \Throwable $th ) {
                 continue;

@@ -67,15 +67,10 @@ class Plugin {
         $links = DB::getInstance()
             ->query( "SELECT
                             c.`card_id` AS `cid`,
-                            c.`card_name` AS `name`,
-                            c.`ts` AS `ts`,
-                            u.`user_name` AS `user_name`,
-                            u.`active` AS `user_active`
+                            c.`card_name` AS `name`
                         FROM
                             card AS c
-                            JOIN `user` AS u USING (`user_id`)
-                        WHERE c.`card_id` IN ('" . implode( "','", array_keys( self::$name_ids ) ) . "')
-                        AND c.`active` = 1;" )
+                        WHERE c.`card_id` IN ('" . implode( "','", array_keys( self::$name_ids ) ) . "');" )
             ->fetchAll( 'cid' );
         $cids = [];
         array_walk_recursive( self::$name_ids, function ( string $v, string $k ) use ( &$cids ): void {
@@ -86,20 +81,13 @@ class Plugin {
             ->query( "SELECT
                             cfv.`value` AS `child_id`,
                             c.`card_id` AS `cid`,
-                            c.`card_name` AS `name`,
-                            c.`ts` AS `ts`,
-                            u.`user_name` AS `user_name`,
-                            u.`active` AS `user_active`
+                            c.`card_name` AS `name`
                         FROM
                             `cardfieldvalue` AS cfv
                             JOIN `cardfield` AS cf USING (`cardfield_id`)
                             JOIN `card` AS c USING (`card_id`)
-                            JOIN `user` AS u
-                                ON (u.`user_id` = c.`user_id`)
                         WHERE cfv.`value` IN ('" . implode( "','", array_keys( $cids ) ) . "')
-                            AND cf.`cardfield_type` = 'link'
-                            AND cfv.`active` = 1
-                            AND c.`active` = 1" )
+                            AND cf.`plugin_code` = 'link';" )
             ->fetchAll( 'child_id', 'cid' );
         // Enrichment card data
         foreach ( self::$name_ids as $cid => $ids ) {

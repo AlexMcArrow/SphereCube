@@ -48,7 +48,11 @@ LoadedMODELS['card'] = {
         $(this.$el).draggabilly({
             containment: '#workspace',
             handle: 'section.meta table'
-        }).on('staticClick', this.dragging).on('pointerDown', this.dragging).css('z-index', (Math.round(new Date().getTime() - Z)));
+        }).on('staticClick', this.dragging).on('pointerDown', this.dragging).on('pointerUp', this.draggend).css('z-index', (Math.round(new Date().getTime() - Z)));
+        if (localStorage.getItem('c-pos-' + this.cid)) {
+            var xy = JSON.parse(localStorage.getItem('c-pos-' + this.cid));
+            $(this.$el).draggabilly('setPosition', xy.left, xy.top);
+        }
     },
     beforeUnmount: function() {
         $(this.$el).draggabilly('disable').draggabilly('destroy');
@@ -69,6 +73,9 @@ LoadedMODELS['card'] = {
         },
         dragging: function(event) {
             $(event.currentTarget).css('z-index', (Math.round(new Date().getTime() - Z)));
+        },
+        draggend: function(event) {
+            localStorage.setItem('c-pos-' + this.cid, JSON.stringify($(this.$el).position()));
         }
     }
 };

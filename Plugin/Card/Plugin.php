@@ -5,7 +5,6 @@ namespace Plugin\Card;
 use DB;
 use Manticore;
 use Plugins;
-use Plugin\User\Plugin as User;
 
 class Plugin {
     /**
@@ -17,9 +16,8 @@ class Plugin {
         DB::getInstance()->query( "UPDATE
                                         `card`
                                     SET
-                                        `user_id` = ?,
                                         `active` = 0
-                                    WHERE `card_id` = ?;", User::$id, $card_id );
+                                    WHERE `card_id` = ?;", $card_id );
         return true;
     }
 
@@ -33,9 +31,8 @@ class Plugin {
         DB::getInstance()->query( "UPDATE
                                         `cardfieldvalue`
                                     SET
-                                        `user_id` = ?,
                                         `active` = 0
-                                    WHERE `cardfieldvalue_id` = ?;", User::$id, $field_id );
+                                    WHERE `cardfieldvalue_id` = ?;", $field_id );
         return $card_id;
     }
 
@@ -47,9 +44,9 @@ class Plugin {
     public static function InsertCard( $name ) {
         $uuid = gen_uuid();
         DB::getInstance()->query( "INSERT INTO `card`
-                                    (`card_id`,`card_name`,`user_id`,`active`,`ts`)
+                                    (`card_id`,`card_name`)
                                     VALUES
-                                    (?,?,?,1,UNIX_TIMESTAMP());", $uuid, $name, User::$id );
+                                    (?,?);", $uuid, $name );
         return $uuid;
     }
 
@@ -78,9 +75,9 @@ class Plugin {
     public static function InsertFieldValue( $card_id, $type_id, $value ) {
         $uuid = gen_uuid();
         DB::getInstance()->query( "INSERT INTO `cardfieldvalue`
-                                    (`cardfieldvalue_id`,`card_id`, `cardfield_id`,`user_id`,`value`,`active`,`ts`)
+                                    (`cardfieldvalue_id`,`card_id`,`cardfield_id`,`value`)
                                     VALUES
-                                    (?,?,?,?,?,1,UNIX_TIMESTAMP());", $uuid, $card_id, $type_id, User::$id, $value );
+                                    (?,?,?,?);", $uuid, $card_id, $type_id, $value );
         return $uuid;
     }
 
@@ -103,17 +100,10 @@ class Plugin {
         return DB::getInstance()
             ->query( "SELECT
                             c.`card_id` AS `cid`,
-                            c.`card_name` AS `name`,
-                            c.`ts` AS `ts`,
-                            c.`active` AS `card_active`,
-                            u.`user_id` AS `uid`,
-                            u.`user_name` AS `user_name`,
-                            u.`active` AS `user_active`
+                            c.`card_name` AS `name`
                         FROM
                             card AS c
-                        JOIN `user` AS u USING (`user_id`)
-                        WHERE c.`card_id` = ?
-                        AND c.`active` = 1;", $card_id )
+                        WHERE c.`card_id` = ?;", $card_id )
             ->fetchAll( true );
     }
 
@@ -128,23 +118,17 @@ class Plugin {
                             cfv.`card_id` AS `cid`,
                             cf.`cardfield_id` AS `cfid`,
                             cf.`cardfield_name` AS `name`,
-                            cf.`cardfield_type` AS `cf_type`,
+                            p.`plugin_code` AS `cf_type`,
                             cfv.`cardfieldvalue_id` AS `cfvid`,
-                            cfv.`value` AS `value`,
-                            cfv.`ts` AS `ts`,
-                            cfv.`active` AS `cfv_active`,
-                            u.`user_id` AS `uid`,
-                            u.`user_name` AS `user_name`,
-                            u.`active` AS `user_active`
+                            cfv.`value` AS `value`
                         FROM
                             card AS c
                             JOIN `cardfieldvalue` AS cfv USING (`card_id`)
                             JOIN `cardfield` AS cf USING (`cardfield_id`)
-                            JOIN `user` AS u
-                                ON (u.`user_id` = cfv.`user_id`)
+                            JOIN `plugin` as p using (`plugin_code`,`plugin_field`)
                         WHERE c.`card_id` = ?
-                            AND cfv.`active` = 1
-                            AND c.`active` = 1;", $card_id )
+                            AND p.`active` = 1
+                        ORDER BY cfv.cardfieldvalue_pos ASC;", $card_id )
             ->fetchAll( 'cfvid' );
     }
 
@@ -251,9 +235,8 @@ class Plugin {
         DB::getInstance()->query( "UPDATE
                                         `card`
                                     SET
-                                        `card_name` = ?,
-                                        `user_id` = ?
-                                    WHERE `card_id` = ?;", $name, User::$id, $card_id );
+                                        `card_name` = ?
+                                    WHERE `card_id` = ?;", $name, $card_id );
     }
 
     /**
@@ -270,8 +253,7 @@ class Plugin {
                                     SET
                                         `card_id` = ?,
                                         `cardfield_id` = ?,
-                                        `user_id` = ?,
                                         `value` = ?
-                                    WHERE `cardfieldvalue_id` = ?;", $card_id, $type_id, User::$id, $value, $field_id );
+                                    WHERE `cardfieldvalue_id` = ?;", $card_id, $type_id, $value, $field_id );
     }
 }
