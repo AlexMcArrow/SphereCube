@@ -22,6 +22,21 @@ class Plugins {
     private static $plugins = [];
 
     /**
+     * Build config array
+     * @return array
+     */
+    public static function Config() {
+        $plugindata = [
+            'models' => [],
+            'metas'  => [],
+            'types'  => [],
+            'files'  => []
+        ];
+        self::calling( 'On', 'PluginsConfig', $plugindata );
+        return $plugindata;
+    }
+
+    /**
      * Search by $query string
      * @param  string  $query
      * @return array
@@ -31,7 +46,7 @@ class Plugins {
             'query'  => $query,
             'result' => []
         ];
-        Plugins::calling( 'On', 'Search', $plugindata );
+        Plugins::calling( 'On', 'PluginsSearch', $plugindata );
         return $plugindata['result'];
     }
 
@@ -45,7 +60,7 @@ class Plugins {
             'query'  => $query,
             'result' => []
         ];
-        Plugins::calling( 'On', 'SearchField', $plugindata );
+        Plugins::calling( 'On', 'PluginsSearchField', $plugindata );
         return $plugindata['result'];
     }
 

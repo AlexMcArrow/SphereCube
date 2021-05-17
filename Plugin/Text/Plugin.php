@@ -20,6 +20,6 @@ class Plugin {
      * @return void
      */
     public static function Register() {
-        Plugins::register( 'On', 'Config', '\Plugin\Text\Plugin::Plugin_On_Config' );
+        Plugins::register( 'On', 'PluginsConfig', '\Plugin\Text\Plugin::Plugin_On_Config' );
     }
 }

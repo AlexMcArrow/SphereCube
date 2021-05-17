@@ -30,7 +30,7 @@ class Plugin {
      * @return void
      */
     public static function Plugin_Card_After_Search( &$data ) {
-        $data = array_filter( $data, function ( array $item ) {
+        $data['result'] = array_filter( $data['result'], function ( array $item ) {
             return ( preg_match( '/^([0-9A-Fa-f]{8}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{12})$/', $item['value'] ) == false ) ? $item : false;
         } );
     }
@@ -52,9 +52,9 @@ class Plugin {
      * @return void
      */
     public static function Register() {
-        Plugins::register( 'After', 'CardRead', '\Plugin\Link\Plugin::Plugin_Card_After_ReadFieldsByID' );
-        Plugins::register( 'After', 'CardSearch', '\Plugin\Link\Plugin::Plugin_Card_After_Search' );
-        Plugins::register( 'On', 'Config', '\Plugin\Link\Plugin::Plugin_On_Config' );
+        Plugins::register( 'After', 'ModelCardRead', '\Plugin\Link\Plugin::Plugin_Card_After_ReadFieldsByID' );
+        Plugins::register( 'After', 'ModelCardSearch', '\Plugin\Link\Plugin::Plugin_Card_After_Search' );
+        Plugins::register( 'On', 'PluginsConfig', '\Plugin\Link\Plugin::Plugin_On_Config' );
     }
 
     /**

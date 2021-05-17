@@ -25,7 +25,7 @@ class Plugin {
      * @return void
      */
     public static function Register() {
-        Plugins::register( 'On', 'Config', '\Plugin\User\Plugin::Plugin_On_Config' );
+        Plugins::register( 'On', 'PluginsConfig', '\Plugin\User\Plugin::Plugin_On_Config' );
     }
 
     /**

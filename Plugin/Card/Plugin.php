@@ -137,9 +137,9 @@ class Plugin {
      * @return void
      */
     public static function Register() {
-        Plugins::register( 'On', 'Config', '\Plugin\Card\Plugin::Plugin_On_Config' );
-        Plugins::register( 'On', 'Search', '\Plugin\Card\Plugin::Search' );
-        Plugins::register( 'On', 'SearchField', '\Plugin\Card\Plugin::SearchField' );
+        Plugins::register( 'On', 'PluginsConfig', '\Plugin\Card\Plugin::Plugin_On_Config' );
+        Plugins::register( 'On', 'PluginsSearch', '\Plugin\Card\Plugin::Search' );
+        Plugins::register( 'On', 'PluginsSearchField', '\Plugin\Card\Plugin::SearchField' );
     }
 
     /**
@@ -148,6 +148,7 @@ class Plugin {
      * @return void
      */
     public static function Search( &$data ) {
+        Plugins::calling( 'Before', 'ModelCardSearch', $data );
         $query = $data['query'];
         $q     = '(*' . implode( '* *', explode( ' ', trim( $query, '*' ) ) ) . '*)';
         if ( strlen( $q ) > 4 ) {
@@ -191,6 +192,7 @@ class Plugin {
                     ->fetchAll( 'cid' );
             }
         }
+        Plugins::calling( 'After', 'ModelCardSearch', $data );
     }
 
     /**
@@ -199,6 +201,7 @@ class Plugin {
      * @return void
      */
     public static function SearchField( &$data ) {
+        Plugins::calling( 'Before', 'ModelCardSearchField', $data );
         $query = $data['query'];
         $q     = trim( $query, '*' ) . '*';
         if ( strlen( $q ) > 1 ) {
@@ -223,6 +226,7 @@ class Plugin {
                                                     WHERE cf.`cardfield_id` IN ('" . implode( "','", $ids ) . "');" )->fetchAll( 'cfid' );
             }
         }
+        Plugins::calling( 'After', 'ModelCardSearchField', $data );
     }
 
     /**

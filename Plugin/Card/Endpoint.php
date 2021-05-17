@@ -2,8 +2,8 @@
 
 namespace Plugin\Card;
 
-use Plugin\Card\Plugin as Card;
 use Plugins;
+use Plugin\Card\Plugin as Card;
 
 /**
  * API proxy-class for JSONRPC-server
@@ -70,13 +70,13 @@ class Endpoint {
             'meta'   => [],
             'fields' => []
         ];
-        Plugins::calling( 'Before', 'CardReadByID', $plugindata );
+        Plugins::calling( 'Before', 'ModelCardReadByID', $plugindata );
         $plugindata = array_merge( $plugindata, ['meta' => Card::ReadByID( $cid )] );
-        Plugins::calling( 'After', 'CardReadByID', $plugindata );
+        Plugins::calling( 'After', 'ModelCardReadByID', $plugindata );
         if ( key_exists( 'cid', $plugindata['meta'] ) ) {
-            Plugins::calling( 'Before', 'CardRead', $plugindata );
+            Plugins::calling( 'Before', 'ModelCardRead', $plugindata );
             $plugindata = array_merge( $plugindata, ['fields' => Card::ReadFieldsByID( $cid )] );
-            Plugins::calling( 'After', 'CardRead', $plugindata );
+            Plugins::calling( 'After', 'ModelCardRead', $plugindata );
             return $plugindata;
         }
         return false;
@@ -112,11 +112,7 @@ class Endpoint {
      * @return array
      */
     public function Search( string $query ) {
-        $plugindata = [];
-        Plugins::calling( 'Before', 'CardSearch', $plugindata );
-        $plugindata = array_merge( $plugindata, Card::Search( $query ) );
-        Plugins::calling( 'After', 'CardSearch', $plugindata );
-        return $plugindata;
+        return Card::Search( $query );
     }
 
     /**
@@ -125,10 +121,6 @@ class Endpoint {
      * @return array
      */
     public function SearchField( string $query ) {
-        $plugindata = [];
-        Plugins::calling( 'Before', 'CardSearchField', $plugindata );
-        $plugindata = array_merge( $plugindata, Card::SearchField( $query ) );
-        Plugins::calling( 'After', 'CardSearchField', $plugindata );
-        return $plugindata;
+        return Card::SearchField( $query );
     }
 }
