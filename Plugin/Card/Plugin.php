@@ -174,6 +174,8 @@ class Plugin
                                 c.`card_id` = cfv.`card_id`
                                 AND cfv.`value` LIKE ?
                             )
+                        WHERE
+                            cfv.`cardfieldvalue_id` IS NOT NULL
                             ", '%' . $query . '%')
                 ->fetchAll('cid');
         }
