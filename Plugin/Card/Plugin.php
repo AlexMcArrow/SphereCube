@@ -163,20 +163,32 @@ class Plugin
         $query = $data['query'];
         if (strlen($query) > 2) {
             $data['result'] = DB::getInstance()
-                ->query("SELECT
-                            c.`card_id` AS `cid`,
-                            c.`card_name` AS `name`,
-                            IFNULL (cfv.`value`, c.`card_name`) AS `value`
+                ->query(
+                    "SELECT
+                        c.`card_id` AS `cid`,
+                        c.`card_name` AS `name`,
+                        IFNULL (cfv.`value`,
+                        c.`card_name`) AS `value`
+                    FROM
+                        `card` AS c
+                    LEFT JOIN `cardfieldvalue` cfv
+                        ON
+                        (
+                            c.`card_id` = cfv.`card_id`
+                            AND LOWER(cfv.`value`) LIKE LOWER(?)
+                        )
+                    WHERE
+                        cfv.`cardfieldvalue_id` IS NOT NULL
+                        OR c.card_id IN (
+                        SELECT
+                            c.`card_id`
                         FROM
                             `card` AS c
-                        LEFT JOIN `cardfieldvalue` cfv
-                            ON (
-                                c.`card_id` = cfv.`card_id`
-                                AND cfv.`value` LIKE ?
-                            )
                         WHERE
-                            cfv.`cardfieldvalue_id` IS NOT NULL
-                            ", '%' . $query . '%')
+                            LOWER(c.`card_name`) LIKE LOWER(?))",
+                    '%' . $query . '%',
+                    '%' . $query . '%'
+                )
                 ->fetchAll('cid');
         }
         Plugins::calling('After', 'ModelCardSearch', $data);
