@@ -1,6 +1,6 @@
 LoadedMETAS['meta-user'] = {
     name: 'meta-user',
-    data: function() {
+    data: function () {
         return {}
     },
     props: {

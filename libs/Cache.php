@@ -1,6 +1,7 @@
 <?php
 
-class Cache {
+class Cache
+{
     /**
      * @var object
      */
@@ -9,19 +10,21 @@ class Cache {
     /**
      * @return void
      */
-    public function __construct() {
-        self::$pool = new Memcached( MEMCACHED_PCON );
-        self::$pool->addServers( MEMCACHED_POOL );
+    public function __construct()
+    {
+        self::$pool = new Memcached(MEMCACHED_PCON);
+        self::$pool->addServers(MEMCACHED_POOL);
     }
 
     /**
      * @param  string  $key
      * @return mixed
      */
-    public static function read( $key ) {
-        $res = self::$pool->get( self::key( $key ) );
-        if ( $res ) {
-            return json_decode( $res, true, 512, JSON_OBJECT_AS_ARRAY );
+    public static function read($key)
+    {
+        $res = self::$pool->get(self::key($key));
+        if ($res) {
+            return json_decode($res, true, 512, JSON_OBJECT_AS_ARRAY);
         }
         return false;
     }
@@ -33,11 +36,12 @@ class Cache {
      * @param  mixed    ...$args
      * @return mixed
      */
-    public static function readorwrite( $key, $ttl, $callback, ...$args ) {
-        $res = self::read( $key );
-        if ( $res === false ) {
-            $res = call_user_func_array( $callback, $args );
-            self::write( $key, $res, $ttl );
+    public static function readorwrite($key, $ttl, $callback, ...$args)
+    {
+        $res = self::read($key);
+        if ($res === false) {
+            $res = call_user_func_array($callback, $args);
+            self::write($key, $res, $ttl);
         }
         return $res;
     }
@@ -48,15 +52,17 @@ class Cache {
      * @param  int     $ttl
      * @return mixed
      */
-    public static function write( $key, $value, $ttl ) {
-        return self::$pool->set( self::key( $key ), json_encode( $value, JSON_UNESCAPED_UNICODE ), $ttl );
+    public static function write($key, $value, $ttl)
+    {
+        return self::$pool->set(self::key($key), json_encode($value, JSON_UNESCAPED_UNICODE), $ttl);
     }
 
     /**
      * @param  string   $key
      * @return string
      */
-    private static function key( $key ) {
-        return hash( 'sha256', strtolower( trim( MEMCACHED_PCON . $key ) ) );
+    private static function key($key)
+    {
+        return hash('sha256', strtolower(trim(MEMCACHED_PCON . $key)));
     }
 }

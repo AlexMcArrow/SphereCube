@@ -1,6 +1,6 @@
 LoadedTYPES['type-simple-text'] = {
     name: 'type-simple-text',
-    data: function() {
+    data: function () {
         return {}
     },
     props: {

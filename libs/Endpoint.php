@@ -5,12 +5,14 @@ use Plugins;
 /**
  * API proxy-class for JSONRPC-server
  */
-class Endpoint {
+class Endpoint
+{
     /**
      * Config
      * @return array
      */
-    public function Config() {
+    public function Config()
+    {
         return Plugins::Config();
     }
 
@@ -18,7 +20,8 @@ class Endpoint {
      * Check API enabled and get server params
      * @return array
      */
-    public function Ping() {
+    public function Ping()
+    {
         return [
             'time'    => time(),
             'domain'  => DOMAIN,
@@ -32,8 +35,9 @@ class Endpoint {
      * @param  string  $query
      * @return array
      */
-    public function Search( string $query ) {
-        return Plugins::Search( $query );
+    public function Search(string $query)
+    {
+        return Plugins::Search($query);
     }
 
     /**
@@ -41,7 +45,8 @@ class Endpoint {
      * @param  string  $query
      * @return array
      */
-    public function SearchField( string $query ) {
-        return Plugins::SearchField( $query );
+    public function SearchField(string $query)
+    {
+        return Plugins::SearchField($query);
     }
 }

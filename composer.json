@@ -3,10 +3,12 @@
     "description": "Structureless Information System",
     "type": "project",
     "license": "MIT",
-    "authors": [{
-        "name": "AlexMcArrow",
-        "email": "alex.mcarrow@gmail.com"
-    }],
+    "authors": [
+        {
+            "name": "AlexMcArrow",
+            "email": "alex.mcarrow@gmail.com"
+        }
+    ],
     "scripts": {
         "psalm": "./vendor/bin/psalm --show-info=true"
     },

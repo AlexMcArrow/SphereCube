@@ -1,6 +1,6 @@
 LoadedMODELS['card'] = {
     name: 'card',
-    data: function() {
+    data: function () {
         return {
             meta: {},
             fields: {}
@@ -41,10 +41,10 @@ LoadedMODELS['card'] = {
                         <component :is="slottype(field.cfvid)" v-for="(field, key) in fields" :key="field.cfvid" :data="field" />
                     </section>
                 </div>`,
-    created: function() {
+    created: function () {
         this.loadcard();
     },
-    mounted: function() {
+    mounted: function () {
         $(this.$el).draggabilly({
             containment: '#workspace',
             handle: 'section.meta table'
@@ -54,27 +54,27 @@ LoadedMODELS['card'] = {
             $(this.$el).draggabilly('setPosition', xy.left, xy.top);
         }
     },
-    beforeUnmount: function() {
+    beforeUnmount: function () {
         $(this.$el).draggabilly('disable').draggabilly('destroy');
     },
     methods: {
-        loadcard: function() {
+        loadcard: function () {
             const self = this;
             MODELCALL('card', 'cardread', { cid: this.cid }, (res) => {
                 Object.assign(self.$data, res);
             });
         },
-        slottype: function(cfvid) {
+        slottype: function (cfvid) {
             var tpl = this.$parent.TYPES['text'];
             if (this.fields[cfvid].cf_type in this.$parent.TYPES) {
                 tpl = this.$parent.TYPES[this.fields[cfvid].cf_type];
             }
             return tpl;
         },
-        dragging: function(event) {
+        dragging: function (event) {
             $(event.currentTarget).css('z-index', (Math.round(new Date().getTime() - Z)));
         },
-        draggend: function(event) {
+        draggend: function (event) {
             localStorage.setItem('c-pos-' + this.cid, JSON.stringify($(this.$el).position()));
         }
     }

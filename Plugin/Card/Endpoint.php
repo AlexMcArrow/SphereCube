@@ -8,15 +8,17 @@ use Plugin\Card\Plugin as Card;
 /**
  * API proxy-class for JSONRPC-server
  */
-class Endpoint {
+class Endpoint
+{
     /**
      * Create Card
      * @param  string        $value
      * @return array|false
      */
-    public function CardCreate( string $value ) {
-        $cid = Card::InsertCard( $value );
-        return $this->CardRead( $cid );
+    public function CardCreate(string $value)
+    {
+        $cid = Card::InsertCard($value);
+        return $this->CardRead($cid);
     }
 
     /**
@@ -25,8 +27,9 @@ class Endpoint {
      * @param  string   $type
      * @return string
      */
-    public function CardCreateField( string $value, string $type ) {
-        return Card::InsertField( $value, $type );
+    public function CardCreateField(string $value, string $type)
+    {
+        return Card::InsertField($value, $type);
     }
 
     /**
@@ -36,9 +39,10 @@ class Endpoint {
      * @param  string        $value
      * @return array|false
      */
-    public function CardCreateFieldValue( string $cid, string $cfid, string $value ) {
-        Card::InsertFieldValue( $cid, $cfid, $value );
-        return $this->CardRead( $cid );
+    public function CardCreateFieldValue(string $cid, string $cfid, string $value)
+    {
+        Card::InsertFieldValue($cid, $cfid, $value);
+        return $this->CardRead($cid);
     }
 
     /**
@@ -46,8 +50,9 @@ class Endpoint {
      * @param  string $cid
      * @return true
      */
-    public function CardDelete( string $cid ) {
-        return Card::DeleteCard( $cid );
+    public function CardDelete(string $cid)
+    {
+        return Card::DeleteCard($cid);
     }
 
     /**
@@ -55,9 +60,10 @@ class Endpoint {
      * @param  string        $cid
      * @return array|false
      */
-    public function CardDeleteFieldValue( string $cid, string $cfvid ) {
-        Card::DeleteCardFieldValue( $cid, $cfvid );
-        return $this->CardRead( $cid );
+    public function CardDeleteFieldValue(string $cid, string $cfvid)
+    {
+        Card::DeleteCardFieldValue($cid, $cfvid);
+        return $this->CardRead($cid);
     }
 
     /**
@@ -65,18 +71,19 @@ class Endpoint {
      * @param  string        $cid
      * @return array|false
      */
-    public function CardRead( string $cid ) {
+    public function CardRead(string $cid)
+    {
         $plugindata = [
             'meta'   => [],
             'fields' => []
         ];
-        Plugins::calling( 'Before', 'ModelCardReadByID', $plugindata );
-        $plugindata = array_merge( $plugindata, ['meta' => Card::ReadByID( $cid )] );
-        Plugins::calling( 'After', 'ModelCardReadByID', $plugindata );
-        if ( key_exists( 'cid', $plugindata['meta'] ) ) {
-            Plugins::calling( 'Before', 'ModelCardRead', $plugindata );
-            $plugindata = array_merge( $plugindata, ['fields' => Card::ReadFieldsByID( $cid )] );
-            Plugins::calling( 'After', 'ModelCardRead', $plugindata );
+        Plugins::calling('Before', 'ModelCardReadByID', $plugindata);
+        $plugindata = array_merge($plugindata, ['meta' => Card::ReadByID($cid)]);
+        Plugins::calling('After', 'ModelCardReadByID', $plugindata);
+        if (key_exists('cid', $plugindata['meta'])) {
+            Plugins::calling('Before', 'ModelCardRead', $plugindata);
+            $plugindata = array_merge($plugindata, ['fields' => Card::ReadFieldsByID($cid)]);
+            Plugins::calling('After', 'ModelCardRead', $plugindata);
             return $plugindata;
         }
         return false;
@@ -88,9 +95,10 @@ class Endpoint {
      * @param  string        $value
      * @return array|false
      */
-    public function CardUpdate( string $cid, string $value ) {
-        Card::UpdateCard( $cid, $value );
-        return $this->CardRead( $cid );
+    public function CardUpdate(string $cid, string $value)
+    {
+        Card::UpdateCard($cid, $value);
+        return $this->CardRead($cid);
     }
 
     /**
@@ -101,9 +109,10 @@ class Endpoint {
      * @param  string        $value
      * @return array|false
      */
-    public function CardUpdateFieldValue( string $cid, string $cfvid, string $cfid, string $value ) {
-        Card::UpdateField( $cid, $cfvid, $cfid, $value );
-        return $this->CardRead( $cid );
+    public function CardUpdateFieldValue(string $cid, string $cfvid, string $cfid, string $value)
+    {
+        Card::UpdateField($cid, $cfvid, $cfid, $value);
+        return $this->CardRead($cid);
     }
 
     /**
@@ -111,8 +120,9 @@ class Endpoint {
      * @param  string  $query
      * @return array
      */
-    public function Search( string $query ) {
-        return Card::Search( $query );
+    public function Search(string $query)
+    {
+        return Card::Search($query);
     }
 
     /**
@@ -120,7 +130,8 @@ class Endpoint {
      * @param  string  $query
      * @return array
      */
-    public function SearchField( string $query ) {
-        return Card::SearchField( $query );
+    public function SearchField(string $query)
+    {
+        return Card::SearchField($query);
     }
 }

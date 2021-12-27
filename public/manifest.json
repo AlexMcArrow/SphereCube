@@ -1,6 +1,7 @@
 {
     "name": "App",
-    "icons": [{
+    "icons": [
+        {
             "src": "\/icon\/android-icon-36x36.png",
             "sizes": "36x36",
             "type": "image\/png",

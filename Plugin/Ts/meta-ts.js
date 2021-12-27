@@ -1,6 +1,6 @@
 LoadedMETAS['meta-ts'] = {
     name: 'meta-ts',
-    data: function() {
+    data: function () {
         return {}
     },
     props: {
@@ -9,10 +9,10 @@ LoadedMETAS['meta-ts'] = {
         }
     },
     computed: {
-        moment: function() {
+        moment: function () {
             return (this.data.ts) ? moment.unix(this.data.ts).format('llll') : '';
         },
-        fromnow: function() {
+        fromnow: function () {
             return (this.data.ts) ? moment.unix(this.data.ts).fromNow() : '';
         }
     },

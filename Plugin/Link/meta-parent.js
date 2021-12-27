@@ -1,6 +1,6 @@
 LoadedMETAS['meta-parent'] = {
     name: 'meta-parent',
-    data: function() {
+    data: function () {
         return {}
     },
     props: {
