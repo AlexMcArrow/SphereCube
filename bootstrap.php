@@ -75,18 +75,17 @@ $DB = new DB();
 // DEBUG variation
 if (DEBUG === true) {
     $DB::show_errors(true);
-    define('STATICVERSION', time());
 } else {
     $DB::show_errors(false);
-    define('STATICVERSION', '20210126');
 }
+
+if (!file_exists(buildpath(COREPATH, 'version'))) {
+    file_put_contents(buildpath(COREPATH, 'version'), time());
+}
+define('STATICVERSION', file_get_contents(buildpath(COREPATH, 'version')));
 
 // DB open connection
 $DB::getInstance()->connect(DB_CONNECT['host'], DB_CONNECT['port'], DB_CONNECT['user'], DB_CONNECT['pass'], DB_CONNECT['name'], DB_CONNECT['char']);
-
-// Manticore connection
-$Manticore = new Manticore();
-$Manticore::getInstance()->connect(MANTICORE_CONNECT['host'], MANTICORE_CONNECT['port'], MANTICORE_CONNECT['name']);
 
 // Initilize Cache
 $Cache = new Cache();
