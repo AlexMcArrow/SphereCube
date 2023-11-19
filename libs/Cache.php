@@ -1,5 +1,7 @@
 <?php
 
+namespace SphereCube;
+
 class Cache
 {
     /**
@@ -12,7 +14,7 @@ class Cache
      */
     public function __construct()
     {
-        self::$pool = new Memcached(MEMCACHED_PCON);
+        self::$pool = new \Memcached(MEMCACHED_PCON);
         self::$pool->addServers(MEMCACHED_POOL);
     }
 

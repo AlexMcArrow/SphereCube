@@ -1,14 +1,11 @@
 <?php
 
+use SphereCube\DB;
+use SphereCube\Cache;
+use SphereCube\Plugins;
+
 // Define COREPATH
 define('COREPATH', __DIR__);
-
-/**
- * AutoloadClassNotFound
- */
-class AutoloadClassNotFound extends Exception
-{
-}
 
 /**
  * Build path to folder
@@ -39,23 +36,6 @@ function gen_uuid()
     );
 }
 
-/**
- * Local class autoloader
- * @param  string $class_name
- * @return void
- */
-function autoloadclass(string $class_name): void
-{
-    if (file_exists(buildpath(COREPATH, 'libs', str_ireplace('\\', DIRECTORY_SEPARATOR, $class_name)) . '.php')) {
-        require_once buildpath(COREPATH, 'libs', str_ireplace('\\', DIRECTORY_SEPARATOR, $class_name)) . '.php';
-    } elseif (file_exists(buildpath(COREPATH, 'Plugin', str_ireplace('\\', DIRECTORY_SEPARATOR, str_ireplace('Plugin\\', '', $class_name))) . '.php')) {
-        require_once buildpath(COREPATH, 'Plugin', str_ireplace('\\', DIRECTORY_SEPARATOR, str_ireplace('Plugin\\', '', $class_name))) . '.php';
-    }
-}
-
-// Register local class autoloader
-spl_autoload_register('autoloadclass');
-
 // check autoload.php and config.php
 if (!file_exists(buildpath(COREPATH, 'vendor', 'autoload.php'))) {
     die('run <code>composer install</code>');
@@ -70,25 +50,16 @@ require buildpath(COREPATH, 'vendor', 'autoload.php');
 // Require config
 require buildpath(COREPATH, 'config.php');
 
-// Initilize DB
-$DB = new DB();
-// DEBUG variation
-if (DEBUG === true) {
-    $DB::show_errors(true);
-} else {
-    $DB::show_errors(false);
-}
-
 if (!file_exists(buildpath(COREPATH, 'version'))) {
-    file_put_contents(buildpath(COREPATH, 'version'), time());
+    file_put_contents(buildpath(COREPATH, 'version'), strval(time()));
 }
 define('STATICVERSION', file_get_contents(buildpath(COREPATH, 'version')));
 
-// DB open connection
-$DB::getInstance()->connect(DB_CONNECT['host'], DB_CONNECT['port'], DB_CONNECT['user'], DB_CONNECT['pass'], DB_CONNECT['name'], DB_CONNECT['char']);
+// Initilize DB
+new DB(DB_CONNECT['base'], DB_CONNECT['host'], DB_CONNECT['user'], DB_CONNECT['pass'], DB_CONNECT['port'], DB_CONNECT['scheme']);
 
 // Initilize Cache
-$Cache = new Cache();
+new Cache();
 
 // Initilize Plugins
-$Plugins = new Plugins();
+new Plugins(PLUGIN_CACHE_TTL);

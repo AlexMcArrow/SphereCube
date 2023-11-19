@@ -2,7 +2,7 @@
 
 namespace Plugin\Text;
 
-use Plugins;
+use SphereCube\Plugins;
 
 class Plugin
 {

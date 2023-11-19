@@ -1,6 +1,8 @@
 <?php
 
-use Plugins;
+namespace SphereCube;
+
+use SphereCube\Plugins;
 
 /**
  * API proxy-class for JSONRPC-server

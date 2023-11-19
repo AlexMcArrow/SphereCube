@@ -1,30 +1,25 @@
 <?php
 
-define( 'DOMAIN', 'spherecube.local.mcg' );
-define( 'APP_PATH', '/' );
-define( 'DEBUG', true );
+define('DOMAIN', 'spherecube.instance');
+define('APP_PATH', '/');
+define('DEBUG', true);
 
-define( 'DB_CONNECT', [
-    'host' => 'localhost',
-    'port' => 3306,
-    'user' => 'dev',
-    'pass' => 'dev',
-    'name' => 'spherecube',
-    'char' => 'utf8'
-] );
+define('DB_CONNECT', [
+    'host' => '10.10.0.10',
+    'port' => 5432,
+    'user' => 'spherecube',
+    'pass' => 'spherecube',
+    'base' => 'spherecube',
+    'scheme' => 'public'
+]);
 
-define( 'MANTICORE_CONNECT', [
-    'host' => 'localhost',
-    'port' => 9308,
-    'name' => 'spherecube'
-] );
-
-define( 'MEMCACHED_PCON', 'spherecube' );
-define( 'MEMCACHED_POOL', [
-    ['localhost', 11211, 10],
+define('MEMCACHED_PCON', 'spherecube');
+define('MEMCACHED_POOL', [
     ['localhost', 11211, 10]
-] );
+]);
 
-define( 'JWT_ISSUE', DOMAIN );
-define( 'JWT_KEY', '4396f7ed7cfebe1129b183dd7cfabca9fd47f99fe076d8397c74a0f3376402ae' );
-define( 'JWT_HEADER', 'X-JWT-Token' );
+define('JWT_ISSUE', DOMAIN);
+define('JWT_KEY', 'ebe17cfab076d8397c744396ca9fd47f99fefa0f3129b1f7ed7c83dd376402ae');
+define('JWT_HEADER', 'X-JWT-Token');
+
+define('PLUGIN_CACHE_TTL', 600);

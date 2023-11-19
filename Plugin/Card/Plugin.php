@@ -2,9 +2,8 @@
 
 namespace Plugin\Card;
 
-use DB;
-use Manticore;
-use Plugins;
+use SphereCube\DB;
+use SphereCube\Plugins;
 
 class Plugin
 {
@@ -16,10 +15,10 @@ class Plugin
     public static function DeleteCard($card_id)
     {
         // DB::getInstance()->query( "UPDATE
-        //                                 `card`
+        //                                 card
         //                             SET
-        //                                 `active` = 0
-        //                             WHERE `card_id` = ?;", $card_id );
+        //                                 active = 0
+        //                             WHERE card_id = ?;", [$card_id] );
         return true;
     }
 
@@ -32,10 +31,10 @@ class Plugin
     public static function DeleteCardFieldValue($card_id, $field_id)
     {
         // DB::getInstance()->query( "UPDATE
-        //                                 `cardfieldvalue`
+        //                                 cardfieldvalue
         //                             SET
-        //                                 `active` = 0
-        //                             WHERE `cardfieldvalue_id` = ?;", $field_id );
+        //                                 active = 0
+        //                             WHERE cardfieldvalue_id = ?;", [$field_id] );
         return $card_id;
     }
 
@@ -47,10 +46,10 @@ class Plugin
     public static function InsertCard($name)
     {
         $uuid = gen_uuid();
-        DB::getInstance()->query("INSERT INTO `card`
-                                    (`card_id`,`card_name`)
+        DB::getInstance()->query("INSERT INTO card
+                                    (card_id,card_name)
                                     VALUES
-                                    (?,?);", $uuid, $name);
+                                    (?,?);", [$uuid, $name]);
         return $uuid;
     }
 
@@ -63,10 +62,10 @@ class Plugin
     public static function InsertField($name, $type)
     {
         $uuid = gen_uuid();
-        DB::getInstance()->query("INSERT INTO `cardfield`
-                                        (`cardfield_id`,`cardfield_name`,`plugin_code`)
+        DB::getInstance()->query("INSERT INTO cardfield
+                                        (cardfield_id,cardfield_name,plugin_code)
                                     VALUES
-                                        (?,?,?);", $uuid, $name, $type);
+                                        (?,?,?);", [$uuid, $name, $type]);
         return $uuid;
     }
 
@@ -80,10 +79,10 @@ class Plugin
     public static function InsertFieldValue($card_id, $type_id, $value)
     {
         $uuid = gen_uuid();
-        DB::getInstance()->query("INSERT INTO `cardfieldvalue`
-                                    (`cardfieldvalue_id`,`card_id`,`cardfield_id`,`value`)
+        DB::getInstance()->query("INSERT INTO cardfieldvalue
+                                    (cardfieldvalue_id,card_id,cardfield_id,value)
                                     VALUES
-                                    (?,?,?,?);", $uuid, $card_id, $type_id, $value);
+                                    (?,?,?,?);", [$uuid, $card_id, $type_id, $value]);
         return $uuid;
     }
 
@@ -107,11 +106,11 @@ class Plugin
     {
         return DB::getInstance()
             ->query("SELECT
-                            c.`card_id` AS `cid`,
-                            c.`card_name` AS `name`
+                            c.card_id AS cid,
+                            c.card_name AS name
                         FROM
                             card AS c
-                        WHERE c.`card_id` = ?;", $card_id)
+                        WHERE c.card_id = ?;", [$card_id])
             ->fetchAll(true);
     }
 
@@ -124,20 +123,20 @@ class Plugin
     {
         return DB::getInstance()
             ->query("SELECT
-                            cfv.`card_id` AS `cid`,
-                            cf.`cardfield_id` AS `cfid`,
-                            cf.`cardfield_name` AS `name`,
-                            p.`plugin_code` AS `cf_type`,
-                            cfv.`cardfieldvalue_id` AS `cfvid`,
-                            cfv.`value` AS `value`
+                            cfv.card_id AS cid,
+                            cf.cardfield_id AS cfid,
+                            cf.cardfield_name AS name,
+                            p.plugin_code AS cf_type,
+                            cfv.cardfieldvalue_id AS cfvid,
+                            cfv.value AS value
                         FROM
                             card AS c
-                            JOIN `cardfieldvalue` AS cfv USING (`card_id`)
-                            JOIN `cardfield` AS cf USING (`cardfield_id`)
-                            JOIN `plugin` as p using (`plugin_code`,`plugin_field`)
-                        WHERE c.`card_id` = ?
-                            AND p.`active` = 1
-                        ORDER BY cfv.cardfieldvalue_pos ASC;", $card_id)
+                            JOIN cardfieldvalue AS cfv USING (card_id)
+                            JOIN cardfield AS cf USING (cardfield_id)
+                            JOIN plugin as p using (plugin_code,plugin_field)
+                        WHERE c.card_id = ?
+                            AND p.active = 1
+                        ORDER BY cfv.cardfieldvalue_pos ASC;", [$card_id])
             ->fetchAll('cfvid');
     }
 
@@ -160,34 +159,35 @@ class Plugin
     public static function Search(&$data)
     {
         Plugins::calling('Before', 'ModelCardSearch', $data);
-        $query = $data['query'];
+        $query = $data['query'] ?: '';
         if (strlen($query) > 2) {
             $data['result'] = DB::getInstance()
                 ->query(
-                    "SELECT
-                        c.`card_id` AS `cid`,
-                        c.`card_name` AS `name`,
-                        IFNULL (cfv.`value`,
-                        c.`card_name`) AS `value`
+                    <<<SQL
+                SELECT
+                    c.card_id AS cid,
+                    c.card_name AS name,
+                    COALESCE(cfv.value, c.card_name) AS value
+                FROM
+                    card AS c
+                LEFT JOIN cardfieldvalue cfv
+                    ON
+                    (
+                        c.card_id = cfv.card_id
+                        AND LOWER(cfv.value) ILIKE LOWER(:search)
+                    )
+                WHERE
+                    cfv.cardfieldvalue_id IS NOT NULL
+                    OR c.card_id IN (
+                    SELECT
+                        c.card_id
                     FROM
-                        `card` AS c
-                    LEFT JOIN `cardfieldvalue` cfv
-                        ON
-                        (
-                            c.`card_id` = cfv.`card_id`
-                            AND LOWER(cfv.`value`) LIKE LOWER(?)
-                        )
+                        card AS c
                     WHERE
-                        cfv.`cardfieldvalue_id` IS NOT NULL
-                        OR c.card_id IN (
-                        SELECT
-                            c.`card_id`
-                        FROM
-                            `card` AS c
-                        WHERE
-                            LOWER(c.`card_name`) LIKE LOWER(?))",
-                    '%' . $query . '%',
-                    '%' . $query . '%'
+                        LOWER(c.card_name) ILIKE LOWER(:search)
+                    )
+                SQL,
+                    ['search' => '%' . $query . '%']
                 )
                 ->fetchAll('cid');
         }
@@ -202,17 +202,17 @@ class Plugin
     public static function SearchField(&$data)
     {
         Plugins::calling('Before', 'ModelCardSearchField', $data);
-        // $query = $data['query'];
+        // $query = $data['query'] ?: '';
         // $q     = trim($query, '*') . '*';
         // if (strlen($q) > 1) {
         //     $data['result'] = DB::getInstance()
         //         ->query("SELECT
-        //                     cf.`cardfield_id` AS cfid,
-        //                     cf.`cardfield_name` AS name,
-        //                     cf.`plugin_code` AS cf_type
+        //                     cf.cardfield_id AS cfid,
+        //                     cf.cardfield_name AS name,
+        //                     cf.plugin_code AS cf_type
         //                 FROM
-        //                     `cardfield` cf
-        //                 WHERE cf.`cardfield_id` IN ('" . implode("','", $ids) . "');")
+        //                     cardfield cf
+        //                 WHERE cf.cardfield_id IN (:ids);", ["'" . implode("','", $ids) . "'"])
         //         ->fetchAll('cfid');
         // }
         Plugins::calling('After', 'ModelCardSearchField', $data);
@@ -227,10 +227,10 @@ class Plugin
     public static function UpdateCard($card_id, $name)
     {
         DB::getInstance()->query("UPDATE
-                                        `card`
+                                        card
                                     SET
-                                        `card_name` = ?
-                                    WHERE `card_id` = ?;", $name, $card_id);
+                                        card_name = ?
+                                    WHERE card_id = ?;", [$name, $card_id]);
     }
 
     /**
@@ -244,11 +244,11 @@ class Plugin
     public static function UpdateField($card_id, $field_id, $type_id, $value)
     {
         DB::getInstance()->query("UPDATE
-                                        `cardfieldvalue`
+                                        cardfieldvalue
                                     SET
-                                        `card_id` = ?,
-                                        `cardfield_id` = ?,
-                                        `value` = ?
-                                    WHERE `cardfieldvalue_id` = ?;", $card_id, $type_id, $value, $field_id);
+                                        card_id = ?,
+                                        cardfield_id = ?,
+                                        value = ?
+                                    WHERE cardfieldvalue_id = ?;", [$card_id, $type_id, $value, $field_id]);
     }
 }

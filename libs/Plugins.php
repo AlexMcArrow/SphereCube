@@ -1,5 +1,9 @@
 <?php
 
+namespace SphereCube;
+
+use SphereCube\DB;
+
 class Plugins
 {
     /**
@@ -21,6 +25,24 @@ class Plugins
      * @var array
      */
     private static $plugins = [];
+
+    public function __construct(int $cache_ttl = null)
+    {
+        $pluginlist = Cache::readorwrite(self::$cache_key, $cache_ttl ?? self::$cache_ttl, function (): array {
+            return self::_read_plugin_list();
+        });
+        foreach ($pluginlist as $plugin_data) {
+            $plugin_data['class'] = 'Plugin\\' . $plugin_data['class'] . '\\Plugin';
+            try {
+                if (method_exists($plugin_data['class'], 'Register')) {
+                    call_user_func($plugin_data['class'] . '::Register');
+                    self::$types[$plugin_data['code']] = $plugin_data;
+                }
+            } catch (\Throwable) {
+                continue;
+            }
+        }
+    }
 
     /**
      * Build config array
@@ -68,24 +90,6 @@ class Plugins
         return $plugindata['result'];
     }
 
-    public function __construct()
-    {
-        $pluginlist = Cache::readorwrite(self::$cache_key, self::$cache_ttl, function (): array {
-            return self::_read_plugin_list();
-        });
-        foreach ($pluginlist as $plugin_data) {
-            $plugin_data['class'] = 'Plugin\\' . $plugin_data['class'] . '\\Plugin';
-            try {
-                if (method_exists($plugin_data['class'], 'Register')) {
-                    call_user_func($plugin_data['class'] . '::Register');
-                    self::$types[$plugin_data['code']] = $plugin_data;
-                }
-            } catch (\Throwable $th) {
-                continue;
-            }
-        }
-    }
-
     /**
      * Calling plugins
      * @param  string $when
@@ -100,7 +104,7 @@ class Plugins
             foreach (self::$plugins[$calling] as $plugin) {
                 try {
                     call_user_func_array($plugin, array(&$data));
-                } catch (\Throwable $th) {
+                } catch (\Throwable) {
                     return;
                 }
             }
@@ -150,13 +154,16 @@ class Plugins
      */
     private static function _read_plugin_list()
     {
-        return DB::getInstance()->query("SELECT
-                                                p.`plugin_name` AS `name`,
-                                                p.`plugin_code` AS `code`,
-                                                p.`plugin_class` AS `class`,
-                                                p.`plugin_desc` AS `desc`
-                                            FROM
-                                                `plugin` p
-                                            WHERE  p.`active` = 1;")->fetchAll('name');
+        return DB::getInstance()->query(<<<SQL
+        SELECT
+            p.plugin_name AS name,
+            p.plugin_code AS code,
+            p.plugin_class AS class,
+            p.plugin_desc AS desc
+        FROM
+            plugin p
+        WHERE
+            p.active = 1;
+        SQL)->fetchAll();
     }
 }

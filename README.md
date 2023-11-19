@@ -8,7 +8,7 @@ Features
 
 - Card - basic structure
   - Title - title of card
-  - Metadata - user information, dates
+  - Metadata - user information, dates, etc
   - Fields - subordinate fields
     - Name - visual name of field
     - Type - define visual display
@@ -17,11 +17,13 @@ Features
 Requirements
 ============
 
-- PHP 7.4 or newer
+- PHP 8.1 or newer* with extensions:
+  - PDO
+  - PDO_Postgre
+  - Memcached
 - HTTP server with PHP support (eg: Apache, Nginx)
 - Composer
-- MySQL-like DB (MySQL v5.x or MariaDB v10.x)
-- Manticore for fast full-text search ([Manticore](https://manticoresearch.com/) or [Sphinx](http://sphinxsearch.com/))
+- PostgreSQL DB
 
 Instalation
 ===========
@@ -32,8 +34,8 @@ Instalation
     ```bash
     composer install
     ```
-- Copy `config.php.exam` to `config.php`
-- Restore DB-dump from `.dev\dump.sql`
+- Copy `config.php.exam` to `config.php` and configure for your server
+- Restore DB-dump from `.dev\dump.sql` into DB
 
 License
 =======

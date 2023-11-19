@@ -2,7 +2,7 @@
 
 namespace Plugin\Card;
 
-use Plugins;
+use SphereCube\Plugins;
 use Plugin\Card\Plugin as Card;
 
 /**

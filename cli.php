@@ -6,6 +6,7 @@ if (php_sapi_name() != 'cli') {
 
 require dirname(__FILE__) . DIRECTORY_SEPARATOR . 'bootstrap.php';
 
+use SphereCube\Plugins;
 use splitbrain\phpcli\CLI;
 use splitbrain\phpcli\Options;
 
@@ -28,7 +29,7 @@ class Minimal extends CLI
                     unlink($cache);
                 }, glob(buildpath(COREPATH, 'cache' . DIRECTORY_SEPARATOR . '*.php')));
                 Plugins::plugin_list_recache();
-                file_put_contents(buildpath(COREPATH, 'version'), time());
+                file_put_contents(buildpath(COREPATH, 'version'), strval(time()));
                 $this->success('Cache cleared');
                 break;
             default:

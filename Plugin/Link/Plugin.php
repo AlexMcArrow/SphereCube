@@ -2,8 +2,8 @@
 
 namespace Plugin\Link;
 
-use DB;
-use Plugins;
+use SphereCube\DB;
+use SphereCube\Plugins;
 
 class Plugin
 {
@@ -72,11 +72,11 @@ class Plugin
         // Get form storage linked cards
         $links = DB::getInstance()
             ->query("SELECT
-                            c.`card_id` AS `cid`,
-                            c.`card_name` AS `name`
+                            c.card_id AS cid,
+                            c.card_name AS name
                         FROM
                             card AS c
-                        WHERE c.`card_id` IN ('" . implode("','", array_keys(self::$name_ids)) . "');")
+                        WHERE c.card_id IN ('" . implode("','", array_keys(self::$name_ids)) . "');")
             ->fetchAll('cid');
         $cids = [];
         array_walk_recursive(self::$name_ids, function (string $v, string $k) use (&$cids): void {
@@ -87,15 +87,15 @@ class Plugin
         // Get form storage parents for cards
         $parent = DB::getInstance()
             ->query("SELECT
-                            cfv.`value` AS `child_id`,
-                            c.`card_id` AS `cid`,
-                            c.`card_name` AS `name`
+                            cfv.value AS child_id,
+                            c.card_id AS cid,
+                            c.card_name AS name
                         FROM
-                            `cardfieldvalue` AS cfv
-                            JOIN `cardfield` AS cf USING (`cardfield_id`)
-                            JOIN `card` AS c USING (`card_id`)
-                        WHERE cfv.`value` IN ('" . implode("','", array_keys($cids)) . "')
-                            AND cf.`plugin_code` = 'link';")
+                            cardfieldvalue AS cfv
+                            JOIN cardfield AS cf USING (cardfield_id)
+                            JOIN card AS c USING (card_id)
+                        WHERE cfv.value IN ('" . implode("','", array_keys($cids)) . "')
+                            AND cf.plugin_code = 'link';")
             ->fetchAll('child_id', 'cid');
         // Enrichment card data
         foreach (self::$name_ids as $cid => $ids) {

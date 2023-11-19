@@ -13,13 +13,22 @@
         "psalm": "./vendor/bin/psalm --show-info=true"
     },
     "require": {
+        "php": "^8.1",
+        "ext-pdo": "*",
+        "ext-memcached": "*",
+        "ext-pdo_pgsql": "*",
         "klein/klein": "^2.1",
         "fguillot/json-rpc": "^1.2",
         "rain/raintpl": "^3.1",
         "splitbrain/php-cli": "^1.1"
     },
     "require-dev": {
-        "vimeo/psalm": "^4.4",
-        "jetbrains/phpstorm-stubs": "^2020.2"
+        "vimeo/psalm": "^4.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "SphereCube\\": "libs/",
+            "Plugin\\": "Plugin/"
+        }
     }
 }

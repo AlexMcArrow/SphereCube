@@ -1,6 +1,9 @@
 <?php
 
 // Require bootstrap
+
+use SphereCube\Endpoint;
+
 require '../bootstrap.php';
 
 // Init Klein router
